@@ -58,7 +58,6 @@ def generate_quiz(passage: str) -> list[QuizQuestion]:
 # Initialize or update session state for quiz
 def initialize_quiz(questions=None):
     if questions is not None:
-        # Shuffle answers for each question
         for question in questions:
             answers = [question.correct, question.incorrect_1, question.incorrect_2, question.incorrect_3]
             # random.shuffle(answers)
@@ -68,12 +67,10 @@ def initialize_quiz(questions=None):
         st.session_state.questions = questions
         st.session_state.user_answers = {i: "" for i in range(len(questions))}
     elif 'questions' not in st.session_state:
-        # Initialize state if not yet set
         st.session_state.questions = []
         st.session_state.user_answers = {}
         
 
-# Render questions and collect answers
 def render_questions():
     for i, question in enumerate(st.session_state.questions):
         options = [question.correct, question.incorrect_1, question.incorrect_2, question.incorrect_3]
@@ -81,8 +78,6 @@ def render_questions():
 
 def display_grade_button(questions: list[QuizQuestion]):
     if st.button("Grade"):
-        # This will trigger grading without needing an on_click parameter
-        # The actual grading logic is moved outside the button check
         st.session_state['grade'] = True
 
 def grade_quiz():
@@ -106,7 +101,6 @@ if uploaded_file is not None:
             questions = generate_quiz(text)
             initialize_quiz(questions)
 else:
-    # Initialize without questions to setup session state structure
     initialize_quiz()
 
 if st.session_state.questions:

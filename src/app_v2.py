@@ -80,6 +80,13 @@ def generate_quiz(passage: str) -> Quiz:
     return Quiz(items=quiz_items)
 
 
+def load_quiz_from_json(json_path: str) -> Quiz:
+    with open(json_path, "r") as f:
+        quiz_data = json.load(f)
+    quiz_items = [QuizQuestion(**kwargs) for kwargs in quiz_data]
+    return Quiz(items=quiz_items)
+
+
 def render_quiz():
     if "quiz" in st.session_state:
         # this runs initially to setup or shuffle options only once
@@ -131,7 +138,9 @@ def render_quiz_or_editable():
         render_quiz()
 
 
-def export_quiz():
+def export_quiz() -> dict:
+    if "quiz" not in st.session_state:
+        return {}
     # Serialize the quiz questions to JSON
     quiz_data = [question.model_dump() for question in st.session_state.quiz.items]
     quiz_json = json.dumps(quiz_data, indent=4)
@@ -178,6 +187,15 @@ def grade_quiz():
         )
 
 
+def reset_quiz():
+    if "quiz" in st.session_state:
+        del st.session_state["quiz"]
+    if "options_dict" in st.session_state:
+        del st.session_state["options_dict"]
+    if "user_answers_dict" in st.session_state:
+        del st.session_state["user_answers_dict"]
+
+
 ######## main stuff
 MAX_TOKENS = 3000
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
@@ -185,32 +203,67 @@ disallowed_special = set(encoding.special_tokens_set) - {"<|endoftext|>"}
 
 
 st.title("qa-bot")
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-if uploaded_file is not None and st.session_state.get("quiz") is None:
-    with st.spinner("Extracting text from PDF..."):
-        full_text = extract_text_from_pdf(uploaded_file)
-        tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
-        n_tokens = len(tokens)
-        if n_tokens > MAX_TOKENS:
-            st.warning(
-                f"Text is too long ({n_tokens} tokens). Truncating to {MAX_TOKENS} tokens."
+st.markdown("""
+## Welcome to QA-Bot!
+This interactive tool allows you to generate quizzes from PDF documents or try our demo quiz to see how it works.
+""")
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Try Demo Quiz"):
+        reset_quiz()
+        st.session_state.quiz = load_quiz_from_json("./data/demo1.json")
+
+with col2:
+    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+    # Save the uploaded file to session state after the first upload
+    if uploaded_file is not None:
+        st.session_state["uploaded_file"] = uploaded_file
+        st.session_state["file_uploaded"] = True
+
+
+# Check if the file has been uploaded and processed
+if "file_uploaded" in st.session_state and st.session_state["file_uploaded"]:
+    # Use the file from session state
+    uploaded_file = st.session_state["uploaded_file"]
+
+    # Process the file only if it hasn't been processed yet
+    if (
+        "file_processed" not in st.session_state
+        or not st.session_state["file_processed"]
+    ):
+        with st.spinner("Extracting text from PDF..."):
+            full_text = extract_text_from_pdf(uploaded_file)
+            tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
+            n_tokens = len(tokens)
+            if n_tokens > MAX_TOKENS:
+                st.warning(
+                    f"Text is too long ({n_tokens} tokens). Truncating to {MAX_TOKENS} tokens."
+                )
+                text = encoding.decode(tokens[:MAX_TOKENS])
+            else:
+                text = full_text
+            st.session_state["processed_text"] = text
+            st.session_state["file_processed"] = True
+            st.write(
+                f"Parsed PDF. Tokens considered: {(MAX_TOKENS if n_tokens > MAX_TOKENS else n_tokens)}/{n_tokens}"
             )
-            text = encoding.decode(tokens[:MAX_TOKENS])
-        st.write(
-            f"Parsed PDF. Tokens considered: {(MAX_TOKENS if n_tokens > MAX_TOKENS else n_tokens)}/{n_tokens}"
-        )
+            # reset quiz if it exists because the text has changed
+            reset_quiz()
+
+    else:
+        text = st.session_state["processed_text"]
 
     if st.button("Generate Questions"):
+        reset_quiz()  # Ensure any existing quiz data is cleared before generating a new quiz
         with st.spinner("Generating questions..."):
             quiz = generate_quiz(text)
             if quiz:
                 st.session_state.quiz = quiz
-                # render_quiz()
             else:
                 st.warning(
                     "No questions were generated. Please try again with a different document."
                 )
-
 
 if "quiz" in st.session_state:
     download_quiz_button()

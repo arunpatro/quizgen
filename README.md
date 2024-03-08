@@ -12,7 +12,8 @@ streamlit run src/app_v2.py
 1. generate MCQ questions from ai
 2. edit questions
 3. export questions
-4. [TODO] explain yourself along with citations/references
+4. demo stuff
+5. [TODO] explain yourself along with citations/references
 
 ## bugs to resolve
-- toggling of edit/preview button is janky
+- quiz reseting may be issues 

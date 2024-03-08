@@ -1,0 +1,58 @@
+[
+    {
+        "question": "What is 1+1?",
+        "correct": "[C] 2",
+        "incorrect_1": "1",
+        "incorrect_2": "3",
+        "incorrect_3": "4"
+    },
+    {
+        "question": "What is the capital of France?",
+        "correct": "[C] Paris",
+        "incorrect_1": "London",
+        "incorrect_2": "Berlin",
+        "incorrect_3": "Madrid"
+    },
+    {
+        "question": "When is the Independence Day in the USA?",
+        "correct": "[C] July 4",
+        "incorrect_1": "July 14",
+        "incorrect_2": "June 4",
+        "incorrect_3": "June 14"
+    },
+    {
+        "question": "What is the largest planet in the Solar System?",
+        "correct": "[C] Jupiter",
+        "incorrect_1": "Earth",
+        "incorrect_2": "Mars",
+        "incorrect_3": "Saturn"
+    },
+    {
+        "question": "What is the largest mammal?",
+        "correct": "[C] Blue whale",
+        "incorrect_1": "Elephant",
+        "incorrect_2": "Giraffe",
+        "incorrect_3": "Hippopotamus"
+    },
+    {
+        "question": "What is the largest ocean?",
+        "correct": "[C] Pacific",
+        "incorrect_1": "Atlantic",
+        "incorrect_2": "Indian",
+        "incorrect_3": "Arctic"
+    },
+    {
+        "question": "What is the largest desert?",
+        "correct": "[C] Antarctica",
+        "incorrect_1": "Sahara",
+        "incorrect_2": "Arabian",
+        "incorrect_3": "Gobi"
+    },
+    {
+        "question": "What is the largest mountain?",
+        "correct": "[C] Mount Everest",
+        "incorrect_1": "K2",
+        "incorrect_2": "Kangchenjunga",
+        "incorrect_3": "Lhotse"
+    }
+]

@@ -5,7 +5,7 @@ This is a project to automate QA.
 ## running
 Choose one of the apps in the src folder to run, and run like:
 ```sh
-streamlit run src/app.py
+streamlit run src/app_v2.py
 ```
 
 ## features

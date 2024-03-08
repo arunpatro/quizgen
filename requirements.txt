@@ -2,3 +2,5 @@ streamlit
 openai
 pymupdf
 dspy-ai
+tiktoken
+pre-commit

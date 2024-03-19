@@ -1,7 +1,11 @@
+:root {
+  --text-white: rgb(250, 250, 250);
+}
+
 body {
   font-family: 'Source Sans Pro', sans-serif;
   background-color: rgb(14, 17, 23);
-  color: rgb(250, 250, 250);
+  color: var(--text-white);
   line-height: 1.2rem;
   font-weight: 400;
   margin: auto;

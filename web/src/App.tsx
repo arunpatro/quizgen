@@ -4,15 +4,60 @@ import { createSignal, Show, createEffect } from 'solid-js';
 import { demo1 } from './demo-data';
 import styles from './App.module.css';
 import uploadIconUrl from '@assets/upload-icon.svg';
+import xIconUrl from '@assets/x-icon.svg';
+import Spinner from './Spinner';
 
+const MAX_FILE_MB = 20;
+const MAX_FILE_SIZE = MAX_FILE_MB * 1024 * 1024;
+
+interface PdfData {
+  total_pages: number;
+  processed_pages: number;
+  text: string;
+  max_tokens: number;
+  total_tokens: number;
+}
+
+// file upload state
 const [file, setFile] = createSignal<File | null>(null);
+const [fileTooLarge, setFileTooLarge] = createSignal(false);
+// pdf processing state
+const [pdfData, setPdfData] = createSignal<PdfData | null>(null);
+const [pdfProcessing, setPdfProcessing] = createSignal(false);
+// demo quiz state
 const [viewDemo, setViewDemo] = createSignal(false);
 
 const App: Component = () => {
   let fileInput!: HTMLInputElement;
   createEffect(() => {
-    if (file() !== null) {
+    const f = file();
+    if (f !== null) {
+      if (f!.size > MAX_FILE_SIZE) {
+        setFileTooLarge(true);
+        setFile(null);
+      } else {
+        setFileTooLarge(false);
+      }
       setViewDemo(false);
+    }
+  });
+  // process pdf (extract text) if file uploaded
+  createEffect(() => {
+    const f = file();
+    if (f !== null && f!.size <= MAX_FILE_SIZE) {
+      setPdfProcessing(true);
+      processPdfHandler(f)
+        .then((data) => setPdfData(data))
+        .then((_) => setPdfProcessing(false))
+        .catch((_) => setPdfProcessing(false));
+    }
+  });
+  // reset file & pdf state if viewing demo quiz
+  createEffect(() => {
+    if (viewDemo()) {
+      setFile(null);
+      setFileTooLarge(false);
+      setPdfData(null);
     }
   });
 
@@ -23,18 +68,9 @@ const App: Component = () => {
         This interactive tool allows you to generate quizzes from PDF documents. Support for other
         data formats (images, videos, web links) will come in the future.
       </p>
-      <p>
-        Try a demo quiz to see how it works, or upload a file to generate your own (no data will be
-        sent to the server).
-      </p>
+      <p>Try a demo quiz to see how it works, or upload a file to generate your own.</p>
       <div class={styles.demoOptions}>
-        <button
-          class={styles.tryDemo}
-          onClick={() => {
-            setFile(null);
-            setViewDemo(true);
-          }}
-        >
+        <button class={styles.tryDemo} onClick={() => setViewDemo(true)}>
           Try demo quiz
         </button>
         <span class={styles.optionsDivider}>or</span>
@@ -56,16 +92,51 @@ const App: Component = () => {
             ></input>
             <img class={styles.fileUploadIcon} src={uploadIconUrl} width={40} />
             <div>
-              <span class={styles.fileDropText}>Drag and drop file here</span>
-              <span class={styles.fileSizeLimit}>Limit 20MB per file &bull; PDF</span>
+              <p class={styles.fileDropText}>Drag and drop file here</p>
+              <span class={styles.fileSizeLimit}>
+                Limit {`${MAX_FILE_MB}MB`} per file &bull; PDF
+              </span>
             </div>
             <button onClick={() => fileInput.click()}>Browse files</button>
           </label>
           <Show when={file() !== null}>
-            <p>{file()!.name}</p>
+            <div class={styles.fileInfo}>
+              {file()!.name}{' '}
+              <span class={styles.fileSizeLimit}>
+                {(file()!.size / 1e6).toLocaleString(undefined, {
+                  maximumFractionDigits: 1,
+                })}
+                MB
+              </span>
+              <img class={styles.xIcon} src={xIconUrl} />
+            </div>
           </Show>
         </section>
       </div>
+      <Show when={fileTooLarge()}>
+        <div class={styles.errorMessage}>
+          Max file size limit exceeded. Please select a smaller file.
+        </div>
+      </Show>
+      <Show when={pdfProcessing()}>
+        <div class={styles.loadingMessage}>
+          <Spinner />
+          Extracting text from PDF file.
+        </div>
+      </Show>
+      <Show when={pdfData() != null}>
+        <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
+          <div class={styles.warningMessage}>
+            Text is too long ({pdfData()!.total_tokens} tokens). Truncating to{' '}
+            {pdfData()!.max_tokens} tokens.
+          </div>
+        </Show>
+        <p class={styles.pdfSuccess}>
+          PDF text successfully parsed. Pages considered:{' '}
+          {`${pdfData()!.processed_pages}/${pdfData()!.total_pages}`}.
+        </p>
+        <button>Generate quiz</button>
+      </Show>
       <Show when={viewDemo()}>
         {demo1.map((q, idx) => (
           <>
@@ -84,6 +155,22 @@ const App: Component = () => {
     </>
   );
 };
+
+async function processPdfHandler(f: File) {
+  const formData = new FormData();
+  formData.append('pdf', f);
+
+  try {
+    const response = await fetch('/api/processPdf', {
+      method: 'POST',
+      body: formData,
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 function uploadHandler(ev: Event) {
   const file = (ev.target as HTMLInputElement).files![0];

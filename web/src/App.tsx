@@ -7,12 +7,12 @@ import uploadIconUrl from '@assets/upload-icon.svg';
 import xIconUrl from '@assets/x-icon.svg';
 import Spinner from './Spinner';
 
-const MAX_FILE_MB = 20;
+const MAX_FILE_MB = 50;
 const MAX_FILE_SIZE = MAX_FILE_MB * 1024 * 1024;
 
 interface PdfData {
   total_pages: number;
-  processed_pages: number;
+  processed_pages: { start: number; end: number };
   text: string;
   max_tokens: number;
   total_tokens: number;
@@ -29,6 +29,7 @@ const [fileTooLarge, setFileTooLarge] = createSignal(false);
 // pdf processing state
 const [pdfData, setPdfData] = createSignal<PdfData | null>(null);
 const [pdfProcessing, setPdfProcessing] = createSignal(false);
+const [pdfError, setPdfError] = createSignal(false);
 // demo state
 const [viewDemo, setViewDemo] = createSignal(false);
 // quiz data state
@@ -48,21 +49,25 @@ const App: Component = () => {
         setFileTooLarge(false);
       }
       setViewDemo(false);
-      // reset quiz state upon file upload
-      setQuizData(null);
-      setQuizError(false);
     }
+    // reset pdf and quiz states upon file change
+    setPdfData(null);
+    setPdfError(false);
+    setQuizData(null);
+    setQuizError(false);
   });
   // process pdf (extract text) if file uploaded
   createEffect(() => {
     const f = file();
     if (f !== null && f!.size <= MAX_FILE_SIZE) {
-      setPdfData(null);
       setPdfProcessing(true);
       processPdfHandler(f)
         .then((data) => setPdfData(data))
         .then(() => setPdfProcessing(false))
-        .catch(() => setPdfProcessing(false));
+        .catch(() => {
+          setPdfProcessing(false);
+          setPdfError(true);
+        });
     }
   });
   // reset file & pdf state if viewing demo quiz
@@ -127,7 +132,7 @@ const App: Component = () => {
                 })}
                 MB
               </span>
-              <img class={styles.xIcon} src={xIconUrl} />
+              <img class={styles.xIcon} src={xIconUrl} onClick={() => setFile(null)} />
             </div>
           </Show>
         </section>
@@ -136,6 +141,9 @@ const App: Component = () => {
         <div class={styles.errorMessage}>
           Max file size limit exceeded. Please select a smaller file.
         </div>
+      </Show>
+      <Show when={pdfError()}>
+        <div class={styles.errorMessage}>Error parsing PDF file, please try another.</div>
       </Show>
       <Show when={pdfProcessing()}>
         <div class={styles.loadingMessage}>
@@ -146,13 +154,16 @@ const App: Component = () => {
       <Show when={pdfData() != null && quizData() == null}>
         <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
           <div class={styles.warningMessage}>
-            Text is too long ({pdfData()!.total_tokens} tokens). Truncating to{' '}
-            {pdfData()!.max_tokens} tokens.
+            Text is too long ({pdfData()!.total_tokens} tokens). Truncated to a{' '}
+            {pdfData()!.max_tokens}-token sample.
           </div>
         </Show>
         <p class={`${styles.pdfSuccess}${quizProcessing() ? ` ${styles.disabled}` : ''}`}>
           PDF text successfully parsed. Pages considered:{' '}
-          {`${pdfData()!.processed_pages}/${pdfData()!.total_pages}`}.
+          {`p.${pdfData()!.processed_pages.start}~p.${pdfData()!.processed_pages.end} out of ${
+            pdfData()!.total_pages
+          } total`}
+          .
         </p>
         <button
           class={styles.quizControlButton}
@@ -162,7 +173,10 @@ const App: Component = () => {
             generateQuizHandler(pdfData()!.text)
               .then((data) => setQuizData(data))
               .then(() => setQuizProcessing(false))
-              .catch(() => setQuizProcessing(false));
+              .catch(() => {
+                setQuizProcessing(false);
+                setQuizError(true);
+              });
           }}
           disabled={quizProcessing()}
         >
@@ -212,6 +226,9 @@ async function processPdfHandler(f: File) {
       method: 'POST',
       body: formData,
     });
+    if (!response.ok) {
+      return Promise.reject(response);
+    }
     const result = await response.json();
     return result;
   } catch (error) {
@@ -228,10 +245,13 @@ async function generateQuizHandler(passage: string) {
       method: 'POST',
       body: formData,
     });
+    if (!response.ok) {
+      return Promise.reject(response);
+    }
     const result = await response.json();
     return result;
   } catch (error) {
-    setQuizError(true);
+    console.error('Error:', error);
   }
 }
 

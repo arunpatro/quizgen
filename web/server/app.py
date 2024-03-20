@@ -34,21 +34,36 @@ def process_pdf():
         return "Not a pdf file.", 400
 
     full_text, text_lengths = extract_text_from_pdf(pdf)
+    if len(full_text) == 0:
+        return "Problem parsing pdf.", 400
+
     tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
     n_tokens = len(tokens)
     if n_tokens > MAX_TOKENS:
-        text = encoding.decode(tokens[:MAX_TOKENS])
-        max_page = next(
-            (i + 1 for i, length in enumerate(text_lengths) if length > len(text)),
+        # randomly sample MAX_TOKENS from mid 75% of text
+        sample_start = random.randint(n_tokens // 8, n_tokens - n_tokens // 8)
+        text = encoding.decode(tokens[sample_start : sample_start + MAX_TOKENS])
+        skip_length = full_text.find(text)
+        start_page = next(
+            (i + 1 for i, length in enumerate(text_lengths) if length > skip_length),
+            len(text_lengths),
+        )
+        end_page = next(
+            (
+                i + 1
+                for i, length in enumerate(text_lengths)
+                if length > skip_length + len(text)
+            ),
             len(text_lengths),
         )
     else:
         text = full_text
-        max_page = len(text_lengths)
+        start_page = 1
+        end_page = len(text_lengths)
 
     response = {
         "total_pages": len(text_lengths),
-        "processed_pages": max_page,
+        "processed_pages": {"start": start_page, "end": end_page},
         "text": text,
         "max_tokens": MAX_TOKENS,
         "total_tokens": n_tokens,

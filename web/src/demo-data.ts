@@ -47,7 +47,7 @@ export const demo1 = [
       { id: 3, text: 'Giraffe' },
       { id: 4, text: 'Hippopotamus' },
     ],
-    correct_option: '1',
+    correct_option: 1,
   },
   {
     question: 'What is the largest ocean?',

@@ -36,6 +36,7 @@ const [viewDemo, setViewDemo] = createSignal(false);
 const [quizData, setQuizData] = createSignal<[QuizItem] | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
 const [quizError, setQuizError] = createSignal(false);
+const [showSolutions, setShowSolutions] = createSignal(false);
 
 const App: Component = () => {
   let fileInput!: HTMLInputElement;
@@ -48,13 +49,14 @@ const App: Component = () => {
       } else {
         setFileTooLarge(false);
       }
+      // reset demo, pdf and quiz states upon file change
       setViewDemo(false);
+      setPdfData(null);
+      setPdfError(false);
+      setQuizData(null);
+      setQuizError(false);
+      setShowSolutions(false);
     }
-    // reset pdf and quiz states upon file change
-    setPdfData(null);
-    setPdfError(false);
-    setQuizData(null);
-    setQuizError(false);
   });
   // process pdf (extract text) if file uploaded
   createEffect(() => {
@@ -76,6 +78,8 @@ const App: Component = () => {
       setFile(null);
       setFileTooLarge(false);
       setPdfData(null);
+      setShowSolutions(false);
+      setQuizData(demo1 as [QuizItem]);
     }
   });
 
@@ -88,13 +92,7 @@ const App: Component = () => {
       </p>
       <p>Try a demo quiz to see how it works, or upload a file to generate your own.</p>
       <div class={styles.demoOptions}>
-        <button
-          class={styles.tryDemo}
-          onClick={() => {
-            setViewDemo(true);
-            setQuizData(demo1 as [QuizItem]);
-          }}
-        >
+        <button class={styles.tryDemo} onClick={() => setViewDemo(true)}>
           Try demo quiz
         </button>
         <span class={styles.optionsDivider}>or</span>
@@ -132,7 +130,19 @@ const App: Component = () => {
                 })}
                 MB
               </span>
-              <img class={styles.xIcon} src={xIconUrl} onClick={() => setFile(null)} />
+              <img
+                class={styles.xIcon}
+                src={xIconUrl}
+                onClick={() => {
+                  // reset all file, pdf and quiz states
+                  setFile(null);
+                  setPdfData(null);
+                  setPdfError(false);
+                  setQuizData(null);
+                  setQuizError(false);
+                  setShowSolutions(false);
+                }}
+              />
             </div>
           </Show>
         </section>
@@ -165,28 +175,32 @@ const App: Component = () => {
           } total`}
           .
         </p>
-        <button
-          class={styles.quizControlButton}
-          onClick={() => {
-            setQuizProcessing(true);
-            setQuizError(false);
-            generateQuizHandler(pdfData()!.text)
-              .then((data) => setQuizData(data))
-              .then(() => setQuizProcessing(false))
-              .catch(() => {
-                setQuizProcessing(false);
-                setQuizError(true);
-              });
-          }}
-          disabled={quizProcessing()}
+        <Show
+          when={!quizProcessing()}
+          fallback={
+            <div class={styles.loadingMessage}>
+              <Spinner />
+              Generating...
+            </div>
+          }
         >
-          Generate questions
-        </button>
-        <Show when={quizProcessing()}>
-          <div class={styles.loadingMessage}>
-            <Spinner />
-            Generating...
-          </div>
+          <button
+            class={styles.quizControlButton}
+            onClick={() => {
+              setQuizProcessing(true);
+              setQuizError(false);
+              generateQuizHandler(pdfData()!.text)
+                .then((data) => setQuizData(data))
+                .then(() => setQuizProcessing(false))
+                .catch(() => {
+                  setQuizProcessing(false);
+                  setQuizError(true);
+                });
+            }}
+            disabled={quizProcessing()}
+          >
+            Generate questions
+          </button>
         </Show>
         <Show when={quizError()}>
           <div class={styles.errorMessage}>
@@ -196,22 +210,34 @@ const App: Component = () => {
         </Show>
       </Show>
       <Show when={quizData() != null}>
-        {quizData()!.map((q, idx) => (
-          <fieldset class={styles.mcFieldset}>
-            <label class={styles.mcQuestion}>{q.question}</label>
-            {q.options.map((opt) => (
-              <div class={styles.mcOption}>
-                <input
-                  type="radio"
-                  id={`q${idx}_${opt.id}`}
-                  value={opt.text}
-                  name={idx.toString()}
-                />
-                <label for={`q${idx}_${opt.id}`}>{opt.text}</label>
-              </div>
-            ))}
-          </fieldset>
-        ))}
+        <div class={styles.quiz}>
+          <button
+            class={styles.quizAnswersButton}
+            onClick={() => setShowSolutions(!showSolutions())}
+          >
+            {showSolutions() ? 'hide answers' : 'show answers'}
+          </button>
+          {quizData()!.map((q, idx) => (
+            <fieldset class={styles.mcFieldset}>
+              <label class={styles.mcQuestion}>{q.question}</label>
+              {q.options.map((opt) => (
+                <div
+                  class={`${styles.mcOption} ${
+                    opt.id == q.correct_option && showSolutions() ? styles.mcAnswer : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    id={`q${idx}_${opt.id}`}
+                    value={opt.text}
+                    name={idx.toString()}
+                  />
+                  <label for={`q${idx}_${opt.id}`}>{opt.text}</label>
+                </div>
+              ))}
+            </fieldset>
+          ))}
+        </div>
       </Show>
     </>
   );

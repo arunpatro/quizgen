@@ -40,8 +40,10 @@ def process_pdf():
     tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
     n_tokens = len(tokens)
     if n_tokens > MAX_TOKENS:
+        # TEMP: use deterministic sampling to utilise dspy cache and save on API costs
         # randomly sample MAX_TOKENS from mid 75% of text
-        sample_start = random.randint(n_tokens // 8, n_tokens - n_tokens // 8)
+        # sample_start = random.randint(n_tokens // 8, n_tokens - n_tokens // 8)
+        sample_start = n_tokens // 3
         text = encoding.decode(tokens[sample_start : sample_start + MAX_TOKENS])
         skip_length = full_text.find(text)
         start_page = next(

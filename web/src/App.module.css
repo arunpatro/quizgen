@@ -45,7 +45,6 @@
   background-color: rgb(14, 17, 23);
   border: 0.1rem solid rgba(250, 250, 250, 0.2);
   border-radius: 0.2rem;
-  font-size: 1rem;
 }
 .fileUpload > button:hover {
   color: rgb(255, 75, 75);
@@ -103,6 +102,29 @@
 .pdfSuccess {
   margin-top: 1.5rem;
   margin-bottom: 1rem;
+}
+
+.quizControlButton {
+  background-color: transparent;
+  color: inherit;
+  border: 0.1rem solid rgba(250, 250, 250, 0.2);
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.quizControlButton:hover {
+  color: rgb(255, 75, 75);
+  border-color: rgb(255, 75, 75);
+}
+.disabled,
+.quizControlButton:disabled {
+  opacity: 0.4;
+}
+.quizControlButton:disabled:hover {
+  color: inherit;
+  border-color: rgba(250, 250, 250, 0.2);
 }
 
 .mcFieldset {

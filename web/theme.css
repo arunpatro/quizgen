@@ -11,6 +11,7 @@ body {
   margin: auto;
   max-width: 40rem;
   padding-top: 4rem;
+  margin-bottom: 4rem;
 }
 
 h1 {
@@ -31,4 +32,8 @@ h6 {
 }
 p {
   margin-bottom: 0.5rem;
+}
+a {
+  color: inherit;
+  font-weight: 600;
 }

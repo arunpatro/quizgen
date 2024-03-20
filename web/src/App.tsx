@@ -125,10 +125,22 @@ const App: Component = () => {
             <div class={styles.fileInfo}>
               {file()!.name}{' '}
               <span class={styles.fileSizeLimit}>
-                {(file()!.size / 1e6).toLocaleString(undefined, {
-                  maximumFractionDigits: 1,
-                })}
-                MB
+                <Show
+                  when={file()!.size > 1e5}
+                  fallback={
+                    <>
+                      {(file()!.size / 1e3).toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}
+                      KB
+                    </>
+                  }
+                >
+                  {(file()!.size / 1e6).toLocaleString(undefined, {
+                    maximumFractionDigits: 1,
+                  })}
+                  MB
+                </Show>
               </span>
               <img
                 class={styles.xIcon}

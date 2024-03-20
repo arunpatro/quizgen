@@ -1,0 +1,59 @@
+.quiz {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+.quizAnswersButton {
+  background: none;
+  border: 1px solid rgba(250, 250, 250, 0.4);
+  color: rgba(250, 250, 250, 0.6);
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  align-self: end;
+}
+
+.mcFieldset {
+  margin-bottom: 3rem;
+}
+.mcQuestion {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.mcOption {
+  padding: 0.25rem 0;
+  border-radius: 0.2rem;
+}
+.mcOption > label {
+  cursor: pointer;
+  padding: 0.1rem 0.2rem 0.1rem 0.5rem;
+  display: block;
+  margin-left: 1.2rem;
+}
+.mcOption > input[type='radio'] {
+  -webkit-appearance: none;
+  appearance: none;
+  float: left;
+  margin: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid rgba(250, 250, 250, 0.4);
+  border-radius: 50%;
+  background-color: rgb(19, 23, 32);
+  cursor: pointer;
+  transform: translateY(0.05rem);
+}
+.mcOption > input[type='radio']:hover {
+  background-color: rgb(38, 39, 48);
+}
+.mcOption > input[type='radio']:checked {
+  border-color: rgb(255, 75, 75);
+  background-color: rgb(255, 75, 75);
+  background-clip: content-box;
+  padding: 2px;
+}
+.mcAnswer {
+  background-color: rgba(61, 213, 109, 0.2);
+  color: rgb(223, 253, 233);
+}

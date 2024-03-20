@@ -1,11 +1,13 @@
 import type { Component } from 'solid-js';
+import type { QuizItem } from './components/Quiz';
 
 import { createSignal, Show, createEffect } from 'solid-js';
 import { demo1 } from './demo-data';
 import styles from './App.module.css';
 import uploadIconUrl from '@assets/upload-icon.svg';
 import xIconUrl from '@assets/x-icon.svg';
-import Spinner from './Spinner';
+import Spinner from './components/Spinner';
+import Quiz from './components/Quiz';
 
 const MAX_FILE_MB = 50;
 const MAX_FILE_SIZE = MAX_FILE_MB * 1024 * 1024;
@@ -16,11 +18,6 @@ interface PdfData {
   text: string;
   max_tokens: number;
   total_tokens: number;
-}
-interface QuizItem {
-  question: string;
-  options: [{ id: number; text: string }];
-  correct_option: number;
 }
 
 // file upload state
@@ -36,7 +33,6 @@ const [viewDemo, setViewDemo] = createSignal(false);
 const [quizData, setQuizData] = createSignal<[QuizItem] | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
 const [quizError, setQuizError] = createSignal(false);
-const [showSolutions, setShowSolutions] = createSignal(false);
 
 const App: Component = () => {
   let fileInput!: HTMLInputElement;
@@ -55,7 +51,6 @@ const App: Component = () => {
       setPdfError(false);
       setQuizData(null);
       setQuizError(false);
-      setShowSolutions(false);
     }
   });
   // process pdf (extract text) if file uploaded
@@ -78,7 +73,6 @@ const App: Component = () => {
       setFile(null);
       setFileTooLarge(false);
       setPdfData(null);
-      setShowSolutions(false);
       setQuizData(demo1 as [QuizItem]);
     }
   });
@@ -152,7 +146,6 @@ const App: Component = () => {
                   setPdfError(false);
                   setQuizData(null);
                   setQuizError(false);
-                  setShowSolutions(false);
                 }}
               />
             </div>
@@ -168,10 +161,7 @@ const App: Component = () => {
         <div class={styles.errorMessage}>Error parsing PDF file, please try another.</div>
       </Show>
       <Show when={pdfProcessing()}>
-        <div class={styles.loadingMessage}>
-          <Spinner />
-          Extracting text from PDF...
-        </div>
+        <Spinner text="Extracting text from PDF..." />
       </Show>
       <Show when={pdfData() != null && quizData() == null}>
         <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
@@ -187,17 +177,9 @@ const App: Component = () => {
           } total`}
           .
         </p>
-        <Show
-          when={!quizProcessing()}
-          fallback={
-            <div class={styles.loadingMessage}>
-              <Spinner />
-              Generating...
-            </div>
-          }
-        >
+        <Show when={!quizProcessing()} fallback={<Spinner text="Generating..." />}>
           <button
-            class={styles.quizControlButton}
+            class={styles.generateQuizButton}
             onClick={() => {
               setQuizProcessing(true);
               setQuizError(false);
@@ -222,34 +204,7 @@ const App: Component = () => {
         </Show>
       </Show>
       <Show when={quizData() != null}>
-        <div class={styles.quiz}>
-          <button
-            class={styles.quizAnswersButton}
-            onClick={() => setShowSolutions(!showSolutions())}
-          >
-            {showSolutions() ? 'hide answers' : 'show answers'}
-          </button>
-          {quizData()!.map((q, idx) => (
-            <fieldset class={styles.mcFieldset}>
-              <label class={styles.mcQuestion}>{q.question}</label>
-              {q.options.map((opt) => (
-                <div
-                  class={`${styles.mcOption} ${
-                    opt.id == q.correct_option && showSolutions() ? styles.mcAnswer : ''
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    id={`q${idx}_${opt.id}`}
-                    value={opt.text}
-                    name={idx.toString()}
-                  />
-                  <label for={`q${idx}_${opt.id}`}>{opt.text}</label>
-                </div>
-              ))}
-            </fieldset>
-          ))}
-        </div>
+        <Quiz items={quizData()!} />
       </Show>
     </>
   );

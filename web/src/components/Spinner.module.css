@@ -1,3 +1,10 @@
+.loadingMessage {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  opacity: 0.4;
+}
+
 .spinner {
   display: inline-block;
   position: relative;

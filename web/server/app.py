@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from dotenv import dotenv_values
 import tiktoken
 import fitz  # PyMuPDF
@@ -147,4 +147,5 @@ def generate_quiz():
         return "No passage provided to generate quiz from.", 400
 
     quiz = _generate_quiz(request.form["passage"])
-    return [item.serialize() for item in quiz.items]
+    # need to jsonify as older versions of Flask don't support auto list serialization
+    return jsonify([item.serialize() for item in quiz.items])

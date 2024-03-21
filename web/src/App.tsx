@@ -30,7 +30,7 @@ const [pdfError, setPdfError] = createSignal(false);
 // demo state
 const [viewDemo, setViewDemo] = createSignal(false);
 // quiz data state
-const [quizData, setQuizData] = createSignal<[QuizItem] | null>(null);
+const [quizData, setQuizData] = createSignal<QuizItem[] | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
 const [quizError, setQuizError] = createSignal(false);
 

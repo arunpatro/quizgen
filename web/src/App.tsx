@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import type { QuizItem } from './components/Quiz';
+import type { QuizData } from './components/Quiz';
 
 import { createSignal, Show, createEffect } from 'solid-js';
 import { demo1 } from './demo-data';
@@ -30,7 +30,7 @@ const [pdfError, setPdfError] = createSignal(false);
 // demo state
 const [viewDemo, setViewDemo] = createSignal(false);
 // quiz data state
-const [quizData, setQuizData] = createSignal<QuizItem[] | null>(null);
+const [quizData, setQuizData] = createSignal<QuizData | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
 const [quizError, setQuizError] = createSignal(false);
 
@@ -73,7 +73,7 @@ const App: Component = () => {
       setFile(null);
       setFileTooLarge(false);
       setPdfData(null);
-      setQuizData(demo1 as [QuizItem]);
+      setQuizData(demo1 as QuizData);
     }
   });
 
@@ -204,7 +204,7 @@ const App: Component = () => {
         </Show>
       </Show>
       <Show when={quizData() != null}>
-        <Quiz items={quizData()!} />
+        <Quiz items={quizData()!} setQuizData={setQuizData} />
       </Show>
     </>
   );
@@ -228,7 +228,6 @@ async function processPdfHandler(f: File) {
     console.error('Error:', error);
   }
 }
-
 async function generateQuizHandler(passage: string) {
   const formData = new FormData();
   formData.append('passage', passage);
@@ -252,7 +251,6 @@ function uploadHandler(ev: Event) {
   const file = (ev.target as HTMLInputElement).files![0];
   setFile(file);
 }
-
 function dropHandler(ev: DragEvent) {
   // Prevent default behavior (Prevent file from being opened)
   ev.preventDefault();

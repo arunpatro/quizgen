@@ -173,3 +173,6 @@ a.quizActionButton {
 .mcsButton:hover {
   text-decoration: underline;
 }
+.js_McoDragging {
+  border: 1px solid rgba(61, 157, 243, 0.8);
+}

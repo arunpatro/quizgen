@@ -47,7 +47,7 @@ const EditQuiz = (props: QuizProps) => {
     const questions: QuizData = [];
     for (const [key, value] of formData.entries()) {
       const split = key.split('_');
-      // option
+      // multi-choice option
       if (split.length > 1) {
         const q = questions[questions.length - 1];
         const optId = parseInt(split[1]);
@@ -67,7 +67,15 @@ const EditQuiz = (props: QuizProps) => {
   return (
     <form id="quiz-edit" class={styles.quiz} onSubmit={saveEditHandler}>
       <div class={`${styles.quizToggles} ${styles.edit}`}>
-        <button type="button" class={styles.quizToggle} onClick={() => setMode(QuizMode.VIEW)}>
+        <button
+          type="button"
+          class={styles.quizToggle}
+          onClick={() => {
+            setMode(QuizMode.VIEW);
+            // reset quiz data to revert any dom ordering changes
+            props.setQuizData(props.items);
+          }}
+        >
           cancel
         </button>
         <button class={styles.quizToggle} type="submit">
@@ -88,10 +96,18 @@ const EditQuiz = (props: QuizProps) => {
             />
           </div>
           {q.options.map((opt) => (
-            <div class={`${styles.mcOption} ${styles.row}`}>
-              {/* <img src={dragIconUrl} class={styles.mcoDragIcon} /> */}
+            <div
+              id={`q${idx}_${opt.id}`}
+              class={`${styles.mcOption} ${styles.row}`}
+              draggable="true"
+              onMouseDown={mouseDownHandler}
+              onMouseUp={mouseUpHandler}
+              onDragEnd={mcoDragEndHandler}
+              onDragOver={mcoDragOverHandler}
+              onDragEnter={mcoDragEnterHandler}
+            >
+              <img src={dragIconUrl} class={styles.mcoDragIcon} draggable="false" />
               <input
-                id={`q${idx}_${opt.id}`}
                 class={styles.mcqEditInput}
                 type="text"
                 required
@@ -120,6 +136,48 @@ const EditQuiz = (props: QuizProps) => {
     </form>
   );
 };
+
+// implements dragging functionality for reordering mc options
+let draggedRow: HTMLElement | null = null;
+// need to use mouse events for initiating drag to not break
+// child input field drag behaviour (text selection)
+function mouseDownHandler(this: HTMLElement, ev: MouseEvent) {
+  const el = ev.target as HTMLElement;
+  if (el.classList.contains(styles.mcoDragIcon)) {
+    draggedRow = this;
+    this.classList.add(styles.js_McoDragging);
+  } else if (el.tagName === 'INPUT') {
+    this.draggable = false;
+  }
+}
+function mouseUpHandler(this: HTMLElement) {
+  if (!this.draggable) {
+    this.draggable = true;
+  }
+}
+function mcoDragEndHandler(ev: DragEvent) {
+  const row = ev.target as HTMLElement;
+  draggedRow = null;
+  row.classList.remove(styles.js_McoDragging);
+}
+function mcoDragOverHandler(ev: DragEvent) {
+  ev.preventDefault();
+}
+function mcoDragEnterHandler(ev: DragEvent) {
+  ev.preventDefault();
+  const row = ev.target as HTMLElement;
+  if (draggedRow && draggedRow !== row && isSameMcGroup(draggedRow.id, row.id)) {
+    const rect = row.getBoundingClientRect();
+    const nextSibling =
+      ev.clientY - rect.top > (rect.bottom - rect.top) / 2 ? row.nextSibling : row;
+    // @ts-ignore
+    this.parentNode.insertBefore(draggedRow, nextSibling);
+  }
+}
+function isSameMcGroup(draggedId: string, currentId: string) {
+  const group = draggedId.split('_')[0];
+  return currentId.startsWith(group + '_');
+}
 
 const [showSolutions, setShowSolutions] = createSignal(false);
 const [quizGrade, setQuizGrade] = createSignal<QuizGrade | null>(null);

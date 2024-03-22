@@ -1,5 +1,7 @@
 import type { QuizData } from './components/Quiz';
 import eduDemoUrl from '@assets/AlbertEinstein_OnEducation.pdf';
+import chemDemoUrl from '@assets/Chemistry-X-1.pdf';
+import paulDemoUrl from '@assets/paulgraham-cities.pdf';
 
 interface Demo {
   title: string;
@@ -113,174 +115,117 @@ const demo1: Demo = {
   ],
 };
 const demo2: Demo = {
-  title: 'Test demo 2',
-  url: '',
+  title: "Chemistry for X - Chapter 1: Chemical Reactions and Equations",
+  url: chemDemoUrl,
   data: [
     {
-      question: 'What is 1+1?',
+      question: 'What is a combination reaction?',
       options: [
-        { id: 1, text: '2' },
-        { id: 2, text: '1' },
-        { id: 3, text: '3' },
-        { id: 4, text: '4' },
+        { id: 1, text: 'A reaction in which a single reactant breaks down to give simpler products' },
+        { id: 2, text: 'A reaction in which two or more substances combine to form multiple products' },
+        { id: 3, text: 'A reaction in which a single product is formed from two or more reactants' },
+        { id: 4, text: 'A reaction in which heat is released along with the formation of products' },
       ],
-      correct_option: 1,
+      correct_option: 3,
     },
     {
-      question: 'What is the capital of France?',
+      question: 'What is an exothermic reaction?',
       options: [
-        { id: 1, text: 'Paris' },
-        { id: 2, text: 'London' },
-        { id: 3, text: 'Berlin' },
-        { id: 4, text: 'Madrid' },
+        { id: 1, text: 'Reactions in which heat is absorbed' },
+        { id: 2, text: 'Reactions in which a single product is formed from two or more reactants' },
+        { id: 3, text: 'Reactions in which heat is released along with the formation of products' },
+        { id: 4, text: 'Reactions in which a single reactant breaks down to give simpler products' },
       ],
-      correct_option: 1,
+      correct_option: 3,
     },
     {
-      question: 'When is the Independence Day in the USA?',
+      question: 'What is a decomposition reaction?',
       options: [
-        { id: 1, text: 'July 4' },
-        { id: 2, text: 'July 14' },
-        { id: 3, text: 'June 4' },
-        { id: 4, text: 'June 14' },
+        { id: 1, text: 'A reaction where two or more substances combine to form a single product' },
+        { id: 2, text: 'A reaction where a single reactant breaks down to give simpler products' },
+        { id: 3, text: 'A reaction where heat is released along with the formation of products' },
+        { id: 4, text: 'A reaction where atoms of one element change into those of another element' },
       ],
-      correct_option: 1,
+      correct_option: 2,
     },
     {
-      question: 'What is the largest planet in the Solar System?',
+      question: 'What happens when calcium oxide reacts with water?',
       options: [
-        { id: 1, text: 'Jupiter' },
-        { id: 2, text: 'Earth' },
-        { id: 3, text: 'Mars' },
-        { id: 4, text: 'Saturn' },
+        { id: 1, text: 'It forms calcium sulphate and releases heat' },
+        { id: 2, text: 'It forms calcium chloride and absorbs heat' },
+        { id: 3, text: 'It forms calcium hydroxide and releases heat' },
+        { id: 4, text: 'It forms calcium carbonate and releases heat' },
       ],
-      correct_option: 1,
+      correct_option: 3,
     },
     {
-      question: 'What is the largest mammal?',
+      question: 'What is the result of the reaction between iron and copper sulphate solution?',
       options: [
-        { id: 1, text: 'Blue whale' },
-        { id: 2, text: 'Elephant' },
-        { id: 3, text: 'Giraffe' },
-        { id: 4, text: 'Hippopotamus' },
+        { id: 1, text: 'Iron and copper combine to form a new element' },
+        { id: 2, text: 'Iron replaces copper' },
+        { id: 3, text: 'No reaction occurs' },
+        { id: 4, text: 'Copper replaces iron' },
       ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest ocean?',
-      options: [
-        { id: 1, text: 'Pacific' },
-        { id: 2, text: 'Atlantic' },
-        { id: 3, text: 'Indian' },
-        { id: 4, text: 'Arctic' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest desert?',
-      options: [
-        { id: 1, text: 'Antarctica' },
-        { id: 2, text: 'Sahara' },
-        { id: 3, text: 'Arabian' },
-        { id: 4, text: 'Gobi' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest mountain?',
-      options: [
-        { id: 1, text: 'Mount Everest' },
-        { id: 2, text: 'K2' },
-        { id: 3, text: 'Kangchenjunga' },
-        { id: 4, text: 'Lhotse' },
-      ],
-      correct_option: 1,
+      correct_option: 2,
     },
   ],
 };
 const demo3: Demo = {
-  title: 'Test demo 3',
-  url: '',
+  title: "Paul Graham - Cities and Ambition",
+  url: paulDemoUrl,
   data: [
     {
-      question: 'What is 1+1?',
+      question: 'What does the author suggest is the reason why Cambridge is considered the intellectual capital?',
       options: [
-        { id: 1, text: '2' },
-        { id: 2, text: '1' },
-        { id: 3, text: '3' },
-        { id: 4, text: '4' },
+        { id: 1, text: 'Cambridge has a high population of professors.' },
+        { id: 2, text: 'Cambridge has the most prestigious universities.' },
+        { id: 3, text: "There's a concentration of smart people there and there's nothing else people there care about more." },
+        { id: 4, text: 'Cambridge has a strong focus on wealth and fame.' },
+      ],
+      correct_option: 3,
+    },
+    {
+      question: 'Why does the author believe New York is unlikely to grow into a startup hub to rival Silicon Valley?',
+      options: [
+        { id: 1, text: 'People in New York admire something else more' },
+        { id: 2, text: 'New York lacks technological resources' },
+        { id: 3, text: 'People in New York admire something else more' },
+        { id: 4, text: 'New York has a poor economy' },
+      ],
+      correct_option: 3,
+    },
+    {
+      question: 'What does the author suggest is the main ambition in LA and how does it compare to New York\'s?',
+      options: [
+        { id: 1, text: 'The main ambition in LA is fame, which is similar to New York\'s ambition but with more emphasis on physical attractiveness.' },
+        { id: 2, text: 'The main ambition in LA is intelligence, which is the opposite of New York\'s focus on fame.' },
+        { id: 3, text: 'The main ambition in LA is political power, which contrasts with New York\'s focus on economic power.' },
+        { id: 4, text: 'The main ambition in LA is wealth, which is completely different from New York\'s focus on fame.' },
       ],
       correct_option: 1,
     },
     {
-      question: 'What is the capital of France?',
+      question: 'What does the author suggest is the message that Paris sends now and how does it differ from its past?',
       options: [
-        { id: 1, text: 'Paris' },
-        { id: 2, text: 'London' },
-        { id: 3, text: 'Berlin' },
-        { id: 4, text: 'Madrid' },
+        { id: 1, text: 'The message Paris sends now is to "do things with style", differing from its past message of intellectual ambition.' },
+        { id: 2, text: 'Paris sends the message of wealth and fame, differing from its past message of intellectual ambition.' },
+        { id: 3, text: 'Paris sends the message of political power, differing from its past message of intellectual ambition.' },
+        { id: 4, text: 'The message Paris sends now is to "do things with intelligence", differing from its past message of style and art.' },
       ],
       correct_option: 1,
     },
     {
-      question: 'When is the Independence Day in the USA?',
+      question: 'According to the author, what are the advantages of living in a great city for certain kinds of work?',
       options: [
-        { id: 1, text: 'July 4' },
-        { id: 2, text: 'July 14' },
-        { id: 3, text: 'June 4' },
-        { id: 4, text: 'June 14' },
+        { id: 1, text: 'Cities offer better weather conditions and recreational activities.' },
+        {
+          id: 2,
+          text: 'Cities provide an audience and a funnel for peers, especially in fields like the arts, writing, or technology. They offer the encouragement of feeling that people around you care about the kind of work you do, and a larger intake mechanism for finding peers.',
+        },
+        { id: 3, text: 'Cities provide cheaper living costs and better infrastructure.' },
+        { id: 4, text: 'Cities provide better healthcare facilities and educational institutions.' },
       ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest planet in the Solar System?',
-      options: [
-        { id: 1, text: 'Jupiter' },
-        { id: 2, text: 'Earth' },
-        { id: 3, text: 'Mars' },
-        { id: 4, text: 'Saturn' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest mammal?',
-      options: [
-        { id: 1, text: 'Blue whale' },
-        { id: 2, text: 'Elephant' },
-        { id: 3, text: 'Giraffe' },
-        { id: 4, text: 'Hippopotamus' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest ocean?',
-      options: [
-        { id: 1, text: 'Pacific' },
-        { id: 2, text: 'Atlantic' },
-        { id: 3, text: 'Indian' },
-        { id: 4, text: 'Arctic' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest desert?',
-      options: [
-        { id: 1, text: 'Antarctica' },
-        { id: 2, text: 'Sahara' },
-        { id: 3, text: 'Arabian' },
-        { id: 4, text: 'Gobi' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What is the largest mountain?',
-      options: [
-        { id: 1, text: 'Mount Everest' },
-        { id: 2, text: 'K2' },
-        { id: 3, text: 'Kangchenjunga' },
-        { id: 4, text: 'Lhotse' },
-      ],
-      correct_option: 1,
+      correct_option: 2,
     },
   ],
 };

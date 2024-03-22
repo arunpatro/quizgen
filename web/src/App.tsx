@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import type { QuizData } from './components/Quiz';
 
 import { createSignal, Show, createEffect } from 'solid-js';
-import { demo1 } from './demo-data';
+import demos from './demo-data';
 import styles from './App.module.css';
 import uploadIconUrl from '@assets/upload-icon.svg';
 import xIconUrl from '@assets/x-icon.svg';
@@ -28,7 +28,7 @@ const [pdfData, setPdfData] = createSignal<PdfData | null>(null);
 const [pdfProcessing, setPdfProcessing] = createSignal(false);
 const [pdfError, setPdfError] = createSignal(false);
 // demo state
-const [viewDemo, setViewDemo] = createSignal(false);
+const [activeDemoIdx, setActiveDemoIdx] = createSignal<number | null>(null);
 // quiz data state
 const [quizData, setQuizData] = createSignal<QuizData | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
@@ -46,7 +46,7 @@ const App: Component = () => {
         setFileTooLarge(false);
       }
       // reset demo, pdf and quiz states upon file change
-      setViewDemo(false);
+      setActiveDemoIdx(null);
       setPdfData(null);
       setPdfError(false);
       setQuizData(null);
@@ -69,11 +69,14 @@ const App: Component = () => {
   });
   // reset file & pdf state if viewing demo quiz
   createEffect(() => {
-    if (viewDemo()) {
+    if (activeDemoIdx() != null) {
       setFile(null);
       setFileTooLarge(false);
       setPdfData(null);
-      setQuizData(demo1 as QuizData);
+      setQuizData(demos[activeDemoIdx()!].data);
+    } else {
+      // clear demo quiz when no active demo
+      setQuizData(null);
     }
   });
 
@@ -86,7 +89,10 @@ const App: Component = () => {
       </p>
       <p>Try a demo quiz to see how it works, or upload a file to generate your own.</p>
       <div class={styles.demoOptions}>
-        <button class={styles.tryDemo} onClick={() => setViewDemo(true)}>
+        <button
+          class={styles.tryDemo}
+          onClick={() => setActiveDemoIdx((prev) => (prev == null ? 0 : null))}
+        >
           Try demo quiz
         </button>
         <span class={styles.optionsDivider}>or</span>
@@ -204,6 +210,39 @@ const App: Component = () => {
         </Show>
       </Show>
       <Show when={quizData() != null}>
+        <section class={styles.pdfPreview}>
+          <Show
+            when={
+              activeDemoIdx() != null && activeDemoIdx()! >= 0 && activeDemoIdx()! < demos.length
+            }
+            fallback={
+              file() ? (
+                <embed height={500} type="application/pdf" src={URL.createObjectURL(file()!)} />
+              ) : undefined
+            }
+          >
+            <div class={styles.pdfPreviewHeader}>
+              <button
+                disabled={activeDemoIdx()! < 1}
+                class={styles.demoPrevNext}
+                onClick={() => setActiveDemoIdx((prev) => Math.max(prev! - 1, 0))}
+              >
+                &larr; prev
+              </button>
+              <h3>{demos[activeDemoIdx()!].title}</h3>
+              <button
+                disabled={activeDemoIdx()! >= demos.length - 1}
+                class={styles.demoPrevNext}
+                onClick={() => setActiveDemoIdx((prev) => Math.min(prev! + 1, demos.length - 1))}
+              >
+                next &rarr;
+              </button>
+            </div>
+            {demos[activeDemoIdx()!].url ? (
+              <embed height={500} type="application/pdf" src={demos[activeDemoIdx()!].url} />
+            ) : null}
+          </Show>
+        </section>
         <Quiz items={quizData()!} setQuizData={setQuizData} />
       </Show>
     </>

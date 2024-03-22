@@ -38,7 +38,7 @@ class Quiz(pydantic.BaseModel):
 
 
 class GenerateQuestions(dspy.Signature):
-    """I want to create a quiz from the provided text, that will be used to test my understanding of the subject objetively. Generate 5 meaningful questions based on the provided text."""
+    """I want to create a quiz from the provided text, that will be used to test my understanding of the subject objectively. Generate 5 meaningful questions based on the provided text."""
 
     passage = dspy.InputField()
     question_1 = dspy.OutputField(desc="often between 5 and 15 words")
@@ -203,10 +203,12 @@ disallowed_special = set(encoding.special_tokens_set) - {"<|endoftext|>"}
 
 
 st.title("qa-bot")
-st.markdown("""
+st.markdown(
+    """
 ## Welcome to QA-Bot!
 This interactive tool allows you to generate quizzes from PDF documents or try our demo quiz to see how it works.
-""")
+"""
+)
 
 col1, col2 = st.columns(2)
 with col1:

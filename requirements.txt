@@ -4,5 +4,7 @@ pymupdf
 dspy-ai
 tiktoken
 pre-commit
-flask
 python-dotenv
+python-multipart
+fastapi
+uvicorn

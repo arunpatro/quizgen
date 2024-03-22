@@ -25,6 +25,12 @@ enum QuizMode {
 const [mode, setMode] = createSignal<QuizMode>(QuizMode.VIEW);
 
 const Quiz = (props: QuizProps) => {
+  createEffect(
+    on(
+      () => props.items,
+      () => setMode(QuizMode.VIEW)
+    )
+  );
   return (
     <Show when={mode() == QuizMode.EDIT} fallback={<ViewQuiz {...props} />}>
       <EditQuiz {...props} />
@@ -188,7 +194,7 @@ const ViewQuiz = (props: QuizProps) => {
     const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
     return URL.createObjectURL(jsonBlob);
   };
-  // reset solutions flag on quiz change
+  // reset view flags on quiz change
   createEffect(
     on(
       () => props.items,

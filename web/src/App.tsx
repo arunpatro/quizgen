@@ -220,7 +220,11 @@ const App: Component = () => {
             }
             fallback={
               file() ? (
-                <embed height={500} type="application/pdf" src={URL.createObjectURL(file()!)} />
+                <embed
+                  height={500}
+                  type="application/pdf"
+                  src={URL.createObjectURL(file()!) + `#page=${pdfData()!.processed_pages.start}`}
+                />
               ) : undefined
             }
           >

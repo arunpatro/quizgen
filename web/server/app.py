@@ -40,9 +40,9 @@ def process_pdf():
     tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
     n_tokens = len(tokens)
     if n_tokens > MAX_TOKENS:
-        # TEMP: use deterministic sampling to utilise dspy cache and save on API costs
         # randomly sample MAX_TOKENS from mid 75% of text
         # sample_start = random.randint(n_tokens // 8, n_tokens - n_tokens // 8)
+        # TEMP: use deterministic sampling to utilise dspy cache and save on API costs
         sample_start = n_tokens // 3
         text = encoding.decode(tokens[sample_start : sample_start + MAX_TOKENS])
         skip_length = full_text.find(text)
@@ -125,9 +125,7 @@ class QuizGen(dspy.Module):
         print(questions)
         quiz_items = []
         for _, q in questions.items():
-            mcq = self.generate_mcq(
-                question=q, context=document, config=dict(temperature=0.8)
-            )
+            mcq = self.generate_mcq(question=q, context=document)
             options = [
                 mcq["correct"],
                 mcq["incorrect_1"],
@@ -147,8 +145,8 @@ class QuizGen(dspy.Module):
         return Quiz(items=quiz_items)
 
 
-turbo = dspy.OpenAI(model="gpt-4-0125-preview", api_key=app.config["OPENAI_API_KEY"])
-dspy.settings.configure(lm=turbo)
+turbo = dspy.OpenAI(model="gpt-4", api_key=app.config["OPENAI_API_KEY"])
+dspy.settings.configure(lm=turbo, log_openai_usage=True)
 quiz_generator = QuizGen()
 
 

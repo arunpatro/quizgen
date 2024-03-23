@@ -1,7 +1,7 @@
 import type { QuizData } from './components/Quiz';
 import eduDemoUrl from '@assets/AlbertEinstein_OnEducation.pdf';
 import chemDemoUrl from '@assets/Chemistry-X-1.pdf';
-import paulDemoUrl from '@assets/paulgraham-cities.pdf';
+import mctsDemoUrl from '@assets/llm-mcts-codegen.pdf';
 
 interface Demo {
   title: string;
@@ -10,7 +10,7 @@ interface Demo {
 }
 
 const demo1: Demo = {
-  title: eduDemoUrl.split('/').pop()!,
+  title: 'Albert Einstein - On Education',
   url: eduDemoUrl,
   data: [
     {
@@ -115,118 +115,194 @@ const demo1: Demo = {
   ],
 };
 const demo2: Demo = {
-  title: "Chemistry for X - Chapter 1: Chemical Reactions and Equations",
+  title: 'Chemistry for X - Chapter 1: Chemical Reactions and Equations',
   url: chemDemoUrl,
   data: [
     {
       question: 'What is a combination reaction?',
       options: [
-        { id: 1, text: 'A reaction in which a single reactant breaks down to give simpler products' },
-        { id: 2, text: 'A reaction in which two or more substances combine to form multiple products' },
-        { id: 3, text: 'A reaction in which a single product is formed from two or more reactants' },
-        { id: 4, text: 'A reaction in which heat is released along with the formation of products' },
+        {
+          id: 1,
+          text: 'A reaction in which a single reactant breaks down to give simpler products.',
+        },
+        {
+          id: 2,
+          text: 'A reaction in which two or more substances combine to form multiple products.',
+        },
+        {
+          id: 3,
+          text: 'A reaction in which a single product is formed from two or more reactants.',
+        },
+        {
+          id: 4,
+          text: 'A reaction in which heat is released along with the formation of products.',
+        },
       ],
       correct_option: 3,
     },
     {
       question: 'What is an exothermic reaction?',
       options: [
-        { id: 1, text: 'Reactions in which heat is absorbed' },
-        { id: 2, text: 'Reactions in which a single product is formed from two or more reactants' },
-        { id: 3, text: 'Reactions in which heat is released along with the formation of products' },
-        { id: 4, text: 'Reactions in which a single reactant breaks down to give simpler products' },
+        { id: 1, text: 'Reactions in which heat is absorbed.' },
+        {
+          id: 2,
+          text: 'Reactions in which a single product is formed from two or more reactants.',
+        },
+        {
+          id: 3,
+          text: 'Reactions in which heat is released along with the formation of products.',
+        },
+        {
+          id: 4,
+          text: 'Reactions in which a single reactant breaks down to give simpler products.',
+        },
       ],
       correct_option: 3,
     },
     {
       question: 'What is a decomposition reaction?',
       options: [
-        { id: 1, text: 'A reaction where two or more substances combine to form a single product' },
-        { id: 2, text: 'A reaction where a single reactant breaks down to give simpler products' },
-        { id: 3, text: 'A reaction where heat is released along with the formation of products' },
-        { id: 4, text: 'A reaction where atoms of one element change into those of another element' },
+        {
+          id: 1,
+          text: 'A reaction where two or more substances combine to form a single product.',
+        },
+        { id: 2, text: 'A reaction where a single reactant breaks down to give simpler products.' },
+        { id: 3, text: 'A reaction where heat is released along with the formation of products.' },
+        {
+          id: 4,
+          text: 'A reaction where atoms of one element change into those of another element.',
+        },
       ],
       correct_option: 2,
     },
     {
       question: 'What happens when calcium oxide reacts with water?',
       options: [
-        { id: 1, text: 'It forms calcium sulphate and releases heat' },
-        { id: 2, text: 'It forms calcium chloride and absorbs heat' },
-        { id: 3, text: 'It forms calcium hydroxide and releases heat' },
-        { id: 4, text: 'It forms calcium carbonate and releases heat' },
+        { id: 1, text: 'It forms calcium sulphate and releases heat.' },
+        { id: 2, text: 'It forms calcium chloride and absorbs heat.' },
+        { id: 3, text: 'It forms calcium hydroxide and releases heat.' },
+        { id: 4, text: 'It forms calcium carbonate and releases heat.' },
       ],
       correct_option: 3,
     },
     {
       question: 'What is the result of the reaction between iron and copper sulphate solution?',
       options: [
-        { id: 1, text: 'Iron and copper combine to form a new element' },
-        { id: 2, text: 'Iron replaces copper' },
-        { id: 3, text: 'No reaction occurs' },
-        { id: 4, text: 'Copper replaces iron' },
+        { id: 1, text: 'Iron and copper combine to form a new element.' },
+        { id: 2, text: 'Iron replaces copper.' },
+        { id: 3, text: 'No reaction occurs.' },
+        { id: 4, text: 'Copper replaces iron.' },
       ],
       correct_option: 2,
     },
   ],
 };
 const demo3: Demo = {
-  title: "Paul Graham - Cities and Ambition",
-  url: paulDemoUrl,
+  title: 'Planning with LLMs for Code Generation',
+  url: mctsDemoUrl,
   data: [
     {
-      question: 'What does the author suggest is the reason why Cambridge is considered the intellectual capital?',
+      question:
+        'What is the main issue with existing large language model-based code generation pipelines?',
       options: [
-        { id: 1, text: 'Cambridge has a high population of professors.' },
-        { id: 2, text: 'Cambridge has the most prestigious universities.' },
-        { id: 3, text: "There's a concentration of smart people there and there's nothing else people there care about more." },
-        { id: 4, text: 'Cambridge has a strong focus on wealth and fame.' },
-      ],
-      correct_option: 3,
-    },
-    {
-      question: 'Why does the author believe New York is unlikely to grow into a startup hub to rival Silicon Valley?',
-      options: [
-        { id: 1, text: 'People in New York admire something else more' },
-        { id: 2, text: 'New York lacks technological resources' },
-        { id: 3, text: 'People in New York admire something else more' },
-        { id: 4, text: 'New York has a poor economy' },
-      ],
-      correct_option: 3,
-    },
-    {
-      question: 'What does the author suggest is the main ambition in LA and how does it compare to New York\'s?',
-      options: [
-        { id: 1, text: 'The main ambition in LA is fame, which is similar to New York\'s ambition but with more emphasis on physical attractiveness.' },
-        { id: 2, text: 'The main ambition in LA is intelligence, which is the opposite of New York\'s focus on fame.' },
-        { id: 3, text: 'The main ambition in LA is political power, which contrasts with New York\'s focus on economic power.' },
-        { id: 4, text: 'The main ambition in LA is wealth, which is completely different from New York\'s focus on fame.' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'What does the author suggest is the message that Paris sends now and how does it differ from its past?',
-      options: [
-        { id: 1, text: 'The message Paris sends now is to "do things with style", differing from its past message of intellectual ambition.' },
-        { id: 2, text: 'Paris sends the message of wealth and fame, differing from its past message of intellectual ambition.' },
-        { id: 3, text: 'Paris sends the message of political power, differing from its past message of intellectual ambition.' },
-        { id: 4, text: 'The message Paris sends now is to "do things with intelligence", differing from its past message of style and art.' },
-      ],
-      correct_option: 1,
-    },
-    {
-      question: 'According to the author, what are the advantages of living in a great city for certain kinds of work?',
-      options: [
-        { id: 1, text: 'Cities offer better weather conditions and recreational activities.' },
+        { id: 4, text: 'They often generate outputs that fail to compile or are incorrect.' },
         {
           id: 2,
-          text: 'Cities provide an audience and a funnel for peers, especially in fields like the arts, writing, or technology. They offer the encouragement of feeling that people around you care about the kind of work you do, and a larger intake mechanism for finding peers.',
+          text: 'They are too inefficient and computationally expensive despite their high accuracy.',
         },
-        { id: 3, text: 'Cities provide cheaper living costs and better infrastructure.' },
-        { id: 4, text: 'Cities provide better healthcare facilities and educational institutions.' },
+        { id: 3, text: 'They can only work with a specific Transformer model.' },
+        {
+          id: 1,
+          text: 'There is no issue with existing large language models and code generation.',
+        },
       ],
-      correct_option: 2,
+      correct_option: 4,
     },
+    {
+      question: 'What is the proposed solution to improve the quality of generated programs?',
+      options: [
+        { id: 2, text: 'Sampling + Filtering algorithms (S+F).' },
+        { id: 3, text: 'Highly specialized Transformer models like AlphaCode.' },
+        { id: 4, text: 'Planning-Guided Transformer Decoding (PG-TD).' },
+        { id: 1, text: 'Beam search-based generation methods.' },
+      ],
+      correct_option: 4,
+    },
+    {
+      question:
+        'What is the purpose of the S+F and SMCG-TD algorithms in the context of the document?',
+      options: [
+        { id: 1, text: 'They are used to fine-tune the Transformer.' },
+        { id: 3, text: 'They use test cases to filter programs generated by the Transformer.' },
+        { id: 2, text: 'They are used to calculate the pass rates of the programs.' },
+        { id: 4, text: 'They generate test cases for the Transformer.' },
+      ],
+      correct_option: 3,
+    },
+    {
+      question: 'How does Planning-Guided Transformer Decoding (PG-TD) work?',
+      options: [
+        {
+          id: 4,
+          text: 'PG-TD uses the Transformer to generate codes and then the planning algorithm optimizes computational efficiency.',
+        },
+        {
+          id: 2,
+          text: 'PG-TD uses the Transformer to generate codes and then the planning algorithm evaluates the quality of these codes.',
+        },
+        {
+          id: 3,
+          text: 'PG-TD uses a planning algorithm for lookahead search and guide the Transformer to generate better code.',
+        },
+        {
+          id: 1,
+          text: 'PG-TD uses a planning algorithm to generate code independently and then have the Transformer evaluate the quality.',
+        },
+      ],
+      correct_option: 3,
+    },
+    {
+      question: 'What is the effect of not having sequence caching in the PG-TD algorithm?',
+      options: [
+        { id: 2, text: 'The algorithm becomes faster thanks to requiring less memory to run.' },
+        {
+          id: 4,
+          text: 'The algorithm needs to regenerate whole sequences, consuming much more time.',
+        },
+        {
+          id: 3,
+          text: "The algorithm can't generate longer programs because it loses context.",
+        },
+        {
+          id: 1,
+          text: "The algorithm generates programs with lower pass rates as it doesn't learn from previous programs.",
+        },
+      ],
+      correct_option: 4,
+    },
+    // {
+    //   correct_option: 2,
+    //   options: [
+    //     {
+    //       id: 3,
+    //       text: 'PG-TD ignores the pass rates of the generated programs during the generation process.',
+    //     },
+    //     {
+    //       id: 4,
+    //       text: 'PG-TD considers the pass rates of the generated programs after the generation process.',
+    //     },
+    //     {
+    //       id: 1,
+    //       text: 'PG-TD only considers the pass rates of the generated programs if they are above a certain threshold.',
+    //     },
+    //     {
+    //       id: 2,
+    //       text: 'PG-TD actively considers the pass rates of the generated programs during the generation process.',
+    //     },
+    //   ],
+    //   question:
+    //     'How does the PG-TD algorithm consider the pass rates of the generated programs during the generation process?',
+    // },
   ],
 };
 

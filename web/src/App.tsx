@@ -183,7 +183,10 @@ const App: Component = () => {
           } total`}
           .
         </p>
-        <Show when={!quizProcessing()} fallback={<Spinner text="Generating..." />}>
+        <Show
+          when={!quizProcessing()}
+          fallback={<Spinner text="Generating... this may take several seconds..." />}
+        >
           <button
             class={styles.generateQuizButton}
             onClick={() => {

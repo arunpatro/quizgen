@@ -185,25 +185,47 @@ function isSameMcGroup(draggedId: string, currentId: string) {
   return currentId.startsWith(group + '_');
 }
 
-const [showSolutions, setShowSolutions] = createSignal(false);
-const [quizGrade, setQuizGrade] = createSignal<QuizGrade | null>(null);
-
 const ViewQuiz = (props: QuizProps) => {
   let jsonExportUrl = () => {
     const jsonStr = JSON.stringify(props.items);
     const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
     return URL.createObjectURL(jsonBlob);
   };
+
+  const [showSolutions, setShowSolutions] = createSignal(false);
+  const [quizGrade, setQuizGrade] = createSignal<QuizGrade | null>(null);
+
   // reset view flags on quiz change
   createEffect(
     on(
       () => props.items,
-      (_) => {
+      () => {
         setShowSolutions(false);
         setQuizGrade(null);
       }
     )
   );
+
+  function gradeQuizHandler(ev: Event) {
+    const el = ev.target as HTMLButtonElement;
+    const form = el!.closest('#quiz-view') as HTMLFormElement;
+
+    let numAnswered = 0;
+    const correct = [];
+    if (form) {
+      const formData = new FormData(form);
+      numAnswered = Array.from(formData.keys()).length;
+
+      for (const [key, value] of formData.entries()) {
+        const qIdx = parseInt(key);
+        const q = props.items[qIdx];
+        const answer = q.options.find((opt) => opt.id == q.correct_option);
+        if (answer?.text == value) correct.push(qIdx);
+      }
+    }
+
+    setQuizGrade({ correct, numAnswered });
+  }
 
   return (
     <form id="quiz-view" class={styles.quiz}>
@@ -224,7 +246,7 @@ const ViewQuiz = (props: QuizProps) => {
           <label class={styles.mcQuestion}>
             <Show when={quizGrade() != null} fallback={q.question}>
               {q.question}{' '}
-              {quizGrade()!.correct.includes(idx) ? (
+              {quizGrade()?.correct.includes(idx) ? (
                 <span class={styles.positive}>correct</span>
               ) : (
                 <span class={styles.negative}>incorrect</span>
@@ -247,11 +269,7 @@ const ViewQuiz = (props: QuizProps) => {
         </fieldset>
       ))}
       <div class={styles.quizActions}>
-        <button
-          type="button"
-          class={styles.quizActionButton}
-          onClick={gradeQuizHandler(props.items)}
-        >
+        <button type="button" class={styles.quizActionButton} onClick={gradeQuizHandler}>
           Grade solutions
         </button>
         <button
@@ -298,28 +316,5 @@ const ViewQuiz = (props: QuizProps) => {
     </form>
   );
 };
-
-function gradeQuizHandler(quizItems: QuizItem[]) {
-  return function (ev: Event) {
-    const el = ev.target as HTMLButtonElement;
-    const form = el!.closest('#quiz-view') as HTMLFormElement;
-
-    let numAnswered = 0;
-    const correct = [];
-    if (form) {
-      const formData = new FormData(form);
-      numAnswered = Array.from(formData.keys()).length;
-
-      for (const [key, value] of formData.entries()) {
-        const qIdx = parseInt(key);
-        const q = quizItems[qIdx];
-        const answer = q.options.find((opt) => opt.id == q.correct_option);
-        if (answer?.text == value) correct.push(qIdx);
-      }
-    }
-
-    setQuizGrade({ correct, numAnswered });
-  };
-}
 
 export default Quiz;

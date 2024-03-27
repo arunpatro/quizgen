@@ -23,7 +23,7 @@ Then start the local backend dev server:
 
 ```sh
 cd server
-flask run
+uvicorn app:app --reload --port 5000
 ```
 
 Connection between the two should be automatic (see `web/vite.config.ts` for proxy config).

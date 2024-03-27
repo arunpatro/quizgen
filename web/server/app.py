@@ -1,5 +1,5 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from fastapi.responses import JSONResponse
+from typing import Annotated
+from fastapi import FastAPI, UploadFile, HTTPException, Form
 from dotenv import dotenv_values
 import tiktoken
 import fitz  # PyMuPDF
@@ -26,7 +26,7 @@ async def extract_text_from_pdf(pdf: UploadFile):
 
 
 @app.post("/api/processPdf")
-async def process_pdf_endpoint(pdf: UploadFile = File(...)):
+async def process_pdf(pdf: UploadFile):
     if pdf.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Not a pdf file.")
 
@@ -37,6 +37,7 @@ async def process_pdf_endpoint(pdf: UploadFile = File(...)):
     tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
     n_tokens = len(tokens)
     if n_tokens > MAX_TOKENS:
+        # TEMP: fixed sampling of source to utilise dspy cache and save on API costs
         sample_start = n_tokens // 3
         text = encoding.decode(tokens[sample_start : sample_start + MAX_TOKENS])
         skip_length = full_text.find(text)
@@ -72,13 +73,6 @@ class QuizItem(pydantic.BaseModel):
     question: str
     options: list[dict]
     correct_option: int
-
-    def serialize(self):
-        return {
-            "question": self.question,
-            "options": self.options,
-            "correct_option": self.correct_option,
-        }
 
 
 class Quiz(pydantic.BaseModel):
@@ -139,17 +133,17 @@ class QuizGen(dspy.Module):
         return Quiz(items=quiz_items)
 
 
-turbo = dspy.OpenAI(model="gpt-4-0125-preview", api_key=OPENAI_API_KEY)
-dspy.settings.configure(lm=turbo)
-generate_quiz = QuizGen()
+turbo = dspy.OpenAI(model="gpt-4", api_key=OPENAI_API_KEY)
+dspy.settings.configure(lm=turbo, log_openai_usage=True)
+quiz_generator = QuizGen()
 
 
 @app.post("/api/generateQuiz")
-async def generate_quiz_endpoint(passage: str = Form(...)):
+def generate_quiz(passage: Annotated[str, Form()]) -> list[QuizItem]:
     if not passage:
         raise HTTPException(
             status_code=400, detail="No passage provided to generate quiz from."
         )
 
-    quiz = generate_quiz(passage)
-    return JSONResponse(content=[item.serialize() for item in quiz.items])
+    quiz = quiz_generator(passage)
+    return quiz.items

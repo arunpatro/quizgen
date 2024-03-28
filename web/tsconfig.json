@@ -10,6 +10,7 @@
     "jsxImportSource": "solid-js",
     "paths": {
       "@assets/*": ["./assets/*"],
+      "@src/*": ["./src/*"],
     },
     "resolveJsonModule": true,
     "types": ["vite/client"],

@@ -147,3 +147,21 @@ def generate_quiz(passage: Annotated[str, Form()]) -> list[QuizItem]:
 
     quiz = quiz_generator(passage)
     return quiz.items
+
+
+@app.post("/api/registerUser")
+def register_user(
+    username: Annotated[str, Form()],
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+    userType: Annotated[str, Form()],
+):
+    pass
+
+
+@app.post("/api/loginUser")
+def login_user(
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+):
+    pass

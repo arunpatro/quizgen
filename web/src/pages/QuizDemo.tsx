@@ -2,6 +2,7 @@ import type { Component } from 'solid-js';
 import type { QuizData } from '@src/components/Quiz';
 
 import { createSignal, Show, createEffect } from 'solid-js';
+import { API } from '@src/constants';
 import demos from '@src/demo-data';
 import styles from './QuizDemo.module.css';
 import uploadIconUrl from '@assets/upload-icon.svg';
@@ -261,7 +262,7 @@ async function processPdfHandler(f: File) {
   formData.append('pdf', f);
 
   try {
-    const response = await fetch('/api/processPdf', {
+    const response = await fetch(API.processPdf, {
       method: 'POST',
       body: formData,
     });
@@ -279,7 +280,7 @@ async function generateQuizHandler(passage: string) {
   formData.append('passage', passage);
 
   try {
-    const response = await fetch('/api/generateQuiz', {
+    const response = await fetch(API.generateQuiz, {
       method: 'POST',
       body: formData,
     });

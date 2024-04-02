@@ -1,11 +1,41 @@
 import type { Component } from 'solid-js';
 
-import { PATHS } from '@src/constants';
+import { useContext } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
+import { AuthContext } from '@src/context';
+import { PATHS, USER_TYPES, API } from '@src/constants';
 import styles from './Auth.module.css';
 
 export const MIN_PASSWORD_LENGTH = 8;
 
 const Register: Component = () => {
+  const navigate = useNavigate();
+  const { setAuthCtx } = useContext(AuthContext);
+
+  async function submitHandler(ev: Event) {
+    ev.preventDefault();
+    const formData = new FormData(ev.target as HTMLFormElement);
+    try {
+      const response = await fetch(API.registerUser, {
+        method: 'POST',
+        body: formData,
+      });
+      // TODO: decide on response contract for errors
+      if (!response.ok) {
+        // handle registration error
+        response.json().then((err) => console.log(err.detail));
+      } else {
+        const result = await response.json();
+        // store user in auth context
+        setAuthCtx((s) => ({ ...s, user: result.user }));
+        // navigate to email confirmation page
+        navigate(PATHS.CONFIRM_EMAIL);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   return (
     <form class={styles.authForm} onSubmit={submitHandler}>
       <input placeholder="Username *" type="text" name="username" required />
@@ -21,12 +51,9 @@ const Register: Component = () => {
         <label for="user-type">I am a: </label>
         <select id="user-type" name="userType" required>
           <option value="">- *</option>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-          <option value="parent">Parent</option>
-          <option value="employee">Employee</option>
-          <option value="academic">Academic</option>
-          <option value="other">Other</option>
+          {Object.entries(USER_TYPES).map(([type, displayText]) => (
+            <option value={type}>{displayText}</option>
+          ))}
         </select>
       </div>
       <button class={styles.submitButton} type="submit">
@@ -38,23 +65,5 @@ const Register: Component = () => {
     </form>
   );
 };
-
-async function submitHandler(ev: Event) {
-  ev.preventDefault();
-  const formData = new FormData(ev.target as HTMLFormElement);
-  try {
-    const response = await fetch('/api/registerUser', {
-      method: 'POST',
-      body: formData,
-    });
-    if (!response.ok) {
-      // handle registration error
-    }
-    const result = await response.json();
-    // store user in app context
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
 
 export default Register;

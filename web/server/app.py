@@ -1,5 +1,7 @@
 from typing import Annotated
 from fastapi import FastAPI, UploadFile, HTTPException, Form
+from supabase import create_client, Client
+from gotrue.errors import AuthApiError
 from dotenv import dotenv_values
 import tiktoken
 import fitz  # PyMuPDF
@@ -10,6 +12,9 @@ import random
 
 app = FastAPI()
 OPENAI_API_KEY = dotenv_values(".env")["OPENAI_API_KEY"]
+SUPABASE_API_URL = dotenv_values(".env")["SUPABASE_API_URL"]
+SUPABASE_API_KEY = dotenv_values(".env")["SUPABASE_API_KEY"]
+supabase: Client = create_client(SUPABASE_API_URL, SUPABASE_API_KEY)
 MAX_TOKENS = 3000
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 disallowed_special = set(encoding.special_tokens_set) - {"<|endoftext|>"}
@@ -156,7 +161,28 @@ def register_user(
     password: Annotated[str, Form()],
     userType: Annotated[str, Form()],
 ):
-    pass
+    # TODO: validate sign up form input
+    res = supabase.auth.sign_up(
+        {
+            "email": email,
+            "password": password,
+            "options": {
+                "data": {"username": username, "user_type": userType},
+            },
+        }
+    )
+    # TODO: handle errors / empty user data
+    response = {
+        "user": {
+            "id": res.user.id,
+            "email": res.user.email,
+            "username": res.user.user_metadata.get("username"),
+            "userType": res.user.user_metadata.get("user_type"),
+            "emailVerified": res.user.email_confirmed_at != None,
+            "createdAt": res.user.created_at,
+        }
+    }
+    return response
 
 
 @app.post("/api/loginUser")
@@ -164,4 +190,30 @@ def login_user(
     email: Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
-    pass
+    try:
+        res = supabase.auth.sign_in_with_password(
+            {"email": email, "password": password}
+        )
+        response = {
+            "user": {
+                "id": res.user.id,
+                "email": res.user.email,
+                "username": res.user.user_metadata.get("username"),
+                "userType": res.user.user_metadata.get("user_type"),
+                "emailVerified": res.user.email_confirmed_at != None,
+                "createdAt": res.user.created_at,
+            },
+            "session": {
+                "access_token": res.session.access_token,
+                "refresh_token": res.session.refresh_token,
+                "expires_at": res.session.expires_at,
+            },
+        }
+        return response
+
+    # FIXME: need more robust error handling
+    except AuthApiError as e:
+        if e.message == "Email not confirmed":
+            return {"error": "confirm_email"}
+        else:
+            raise HTTPException(status_code=400, detail=e.message)

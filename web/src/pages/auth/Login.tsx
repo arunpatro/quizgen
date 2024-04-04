@@ -28,9 +28,9 @@ const Login: Component = () => {
           navigate(PATHS.CONFIRM_EMAIL);
         } else {
           // store user in auth context
-          setAuthCtx((s) => ({ ...s, user: result.user }));
+          setAuthCtx('user', result.user);
           // navigate to home
-          navigate(PATHS.HOME);
+          navigate(PATHS.ROOT);
         }
       }
     } catch (error) {

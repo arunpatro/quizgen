@@ -1,5 +1,5 @@
-from typing import Annotated
-from fastapi import FastAPI, UploadFile, HTTPException, Form
+from typing import Annotated, Union
+from fastapi import FastAPI, UploadFile, HTTPException, Form, Response, Cookie
 from supabase import create_client, Client
 from gotrue.errors import AuthApiError
 from dotenv import dotenv_values
@@ -187,14 +187,21 @@ def register_user(
 
 @app.post("/api/loginUser")
 def login_user(
-    email: Annotated[str, Form()],
-    password: Annotated[str, Form()],
+    email: Annotated[str, Form()], password: Annotated[str, Form()], response: Response
 ):
     try:
         res = supabase.auth.sign_in_with_password(
             {"email": email, "password": password}
         )
-        response = {
+        response.set_cookie(
+            key="access_token",
+            value=res.session.access_token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            expires=res.session.expires_at,
+        )
+        jsonResp = {
             "user": {
                 "id": res.user.id,
                 "email": res.user.email,
@@ -209,11 +216,35 @@ def login_user(
                 "expires_at": res.session.expires_at,
             },
         }
-        return response
+        return jsonResp
 
     # FIXME: need more robust error handling
     except AuthApiError as e:
         if e.message == "Email not confirmed":
             return {"error": "confirm_email"}
+        else:
+            raise HTTPException(status_code=400, detail=e.message)
+
+
+@app.get("/api/fetchUser")
+def fetch_user(access_token: Annotated[Union[str, None], Cookie()]):
+    try:
+        res = supabase.auth.get_user(access_token)
+        response = {
+            "user": {
+                "id": res.user.id,
+                "email": res.user.email,
+                "username": res.user.user_metadata.get("username"),
+                "userType": res.user.user_metadata.get("user_type"),
+                "emailVerified": res.user.email_confirmed_at != None,
+                "createdAt": res.user.created_at,
+            }
+        }
+        return response
+
+    # FIXME: need more robust error handling
+    except AuthApiError as e:
+        if "token is expired" in e.message:
+            return {"user": None}
         else:
             raise HTTPException(status_code=400, detail=e.message)

@@ -1,5 +1,5 @@
 export const PATHS = {
-  HOME: '/',
+  ROOT: '/',
   LOGIN: '/login',
   REGISTER: '/register',
   CONFIRM_EMAIL: '/confirm-email',
@@ -15,6 +15,7 @@ export const USER_TYPES = {
 };
 
 export const API = {
+  fetchUser: '/api/fetchUser',
   registerUser: '/api/registerUser',
   loginUser: '/api/loginUser',
   processPdf: '/api/processPdf',

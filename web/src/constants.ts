@@ -18,6 +18,7 @@ export const API = {
   fetchUser: '/api/fetchUser',
   registerUser: '/api/registerUser',
   loginUser: '/api/loginUser',
+  logoutUser: '/api/logoutUser',
   processPdf: '/api/processPdf',
   generateQuiz: '/api/generateQuiz',
 };

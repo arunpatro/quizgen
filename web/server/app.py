@@ -248,3 +248,15 @@ def fetch_user(access_token: Annotated[Union[str, None], Cookie()]):
             return {"user": None}
         else:
             raise HTTPException(status_code=400, detail=e.message)
+
+
+@app.post("/api/logoutUser")
+def logout_user(response: Response):
+    response.set_cookie(
+        key="access_token",
+        value="",
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=0,
+    )

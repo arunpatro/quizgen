@@ -1,9 +1,10 @@
 import type { ParentComponent } from 'solid-js';
 
-import { createEffect, lazy, useContext } from 'solid-js';
+import { Show, createEffect, lazy, useContext } from 'solid-js';
 import { Router, Route, useNavigate } from '@solidjs/router';
 import { PATHS } from './constants';
 import { AuthProvider, AuthContext } from './context';
+import Header from './components/Header';
 
 const QuizDemo = lazy(() => import('./pages/QuizDemo'));
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -22,7 +23,14 @@ const ProtectedRoute: ParentComponent = (props) => {
     }
   });
 
-  return <>{props.children}</>;
+  return (
+    <>
+      <Show when={authCtx.user != null}>
+        <Header />
+      </Show>
+      {props.children}
+    </>
+  );
 };
 
 const AuthRoute: ParentComponent = (props) => {

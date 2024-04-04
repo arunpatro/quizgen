@@ -1,13 +1,14 @@
 import type { Component } from 'solid-js';
-import type { QuizData } from './components/Quiz';
+import type { QuizData } from '@src/components/Quiz';
 
 import { createSignal, Show, createEffect } from 'solid-js';
-import demos from './demo-data';
-import styles from './App.module.css';
+import { API } from '@src/constants';
+import demos from '@src/demo-data';
+import styles from './QuizDemo.module.css';
 import uploadIconUrl from '@assets/upload-icon.svg';
 import xIconUrl from '@assets/x-icon.svg';
-import Spinner from './components/Spinner';
-import Quiz from './components/Quiz';
+import Spinner from '@src/components/Spinner';
+import Quiz from '@src/components/Quiz';
 
 const MAX_FILE_MB = 50;
 const MAX_FILE_SIZE = MAX_FILE_MB * 1024 * 1024;
@@ -34,7 +35,7 @@ const [quizData, setQuizData] = createSignal<QuizData | null>(null);
 const [quizProcessing, setQuizProcessing] = createSignal(false);
 const [quizError, setQuizError] = createSignal(false);
 
-const App: Component = () => {
+const QuizDemo: Component = () => {
   let fileInput!: HTMLInputElement;
   createEffect(() => {
     const f = file();
@@ -261,7 +262,7 @@ async function processPdfHandler(f: File) {
   formData.append('pdf', f);
 
   try {
-    const response = await fetch('/api/processPdf', {
+    const response = await fetch(API.processPdf, {
       method: 'POST',
       body: formData,
     });
@@ -279,7 +280,7 @@ async function generateQuizHandler(passage: string) {
   formData.append('passage', passage);
 
   try {
-    const response = await fetch('/api/generateQuiz', {
+    const response = await fetch(API.generateQuiz, {
       method: 'POST',
       body: formData,
     });
@@ -321,4 +322,4 @@ function dragOverHandler(ev: DragEvent) {
   ev.dataTransfer!.dropEffect = 'copy';
 }
 
-export default App;
+export default QuizDemo;

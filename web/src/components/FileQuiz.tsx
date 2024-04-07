@@ -7,6 +7,7 @@ import uploadIconUrl from '@assets/upload-icon.svg';
 import xIconUrl from '@assets/x-icon.svg';
 import Quiz from './Quiz';
 import Spinner from './Spinner';
+import commonStyles from './Common.module.css';
 import styles from './FileQuiz.module.css';
 
 interface PdfData {
@@ -68,15 +69,20 @@ const FileQuiz: Component = (_) => {
     <>
       <FileUpload />
       <Switch>
+        <Match when={fileTooLarge()}>
+          <div class={commonStyles.errorMessage}>
+            Max file size limit exceeded. Please select a smaller file.
+          </div>
+        </Match>
         <Match when={pdfProcessing()}>
           <Spinner text="Extracting text from PDF..." />
         </Match>
         <Match when={pdfError()}>
-          <div class={styles.errorMessage}>Error parsing PDF file, please try another.</div>
+          <div class={commonStyles.errorMessage}>Error parsing PDF file, please try another.</div>
         </Match>
         <Match when={pdfData() != null && quizData().length == 0}>
           <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
-            <div class={styles.warningMessage}>
+            <div class={commonStyles.warningMessage}>
               Text is too long ({pdfData()!.total_tokens} tokens). Truncated to a{' '}
               {pdfData()!.max_tokens}-token sample.
             </div>
@@ -111,7 +117,7 @@ const FileQuiz: Component = (_) => {
             </button>
           </Show>
           <Show when={quizError()}>
-            <div class={styles.errorMessage}>
+            <div class={commonStyles.errorMessage}>
               Sorry but the quiz cannot be generated right now. Please try again later or{' '}
               <a href="emailto:support@creia.ai">contact us</a> for support.
             </div>
@@ -215,11 +221,6 @@ const FileUpload: Component = (_) => {
             </Show>
           </span>
           <img class={styles.xIcon} src={xIconUrl} onClick={() => setFile(null)} />
-        </div>
-      </Show>
-      <Show when={fileTooLarge()}>
-        <div class={styles.errorMessage}>
-          Max file size limit exceeded. Please select a smaller file.
         </div>
       </Show>
     </>

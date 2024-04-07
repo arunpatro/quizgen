@@ -8,8 +8,10 @@
   flex-grow: 1;
   padding: 0.5rem;
   cursor: pointer;
+  opacity: 0.4;
 }
 .tabMenu > li.selected {
   border-bottom: none;
   font-weight: 600;
+  opacity: 1;
 }

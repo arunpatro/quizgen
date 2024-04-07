@@ -260,3 +260,8 @@ def logout_user(response: Response):
         samesite="lax",
         max_age=0,
     )
+
+
+@app.post("/api/processLink")
+def process_link():
+    pass

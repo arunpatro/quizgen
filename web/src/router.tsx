@@ -6,7 +6,7 @@ import { PATHS } from './constants';
 import { AuthProvider, AuthContext } from './context';
 import Header from './components/Header';
 
-const QuizDemo = lazy(() => import('./pages/QuizDemo'));
+const QuizGen = lazy(() => import('./pages/QuizGen'));
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
 const ConfirmEmail = lazy(() => import('./pages/auth/ConfirmEmail'));
@@ -55,7 +55,7 @@ export default function App() {
       <Router>
         {/* PROTECTED ROUTES */}
         <Route path={PATHS.ROOT} component={ProtectedRoute}>
-          <Route path={PATHS.ROOT} component={QuizDemo} />
+          <Route path={PATHS.ROOT} component={QuizGen} />
         </Route>
 
         {/* AUTH ROUTES */}

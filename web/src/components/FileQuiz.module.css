@@ -1,63 +1,3 @@
-.demoOptions {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
-}
-.optionsDivider {
-  margin-top: 3rem;
-}
-.tryDemo {
-  margin-top: 0.5rem;
-  background-color: transparent;
-  color: inherit;
-  border: 0.1rem solid rgba(250, 250, 250, 0.2);
-  border-radius: 0.2rem;
-  padding: 2rem 1rem;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-.tryDemo:hover {
-  color: rgb(255, 75, 75);
-  border-color: rgb(255, 75, 75);
-}
-.pdfPreview {
-  display: flex;
-  flex-direction: column;
-}
-.pdfPreviewHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1rem 0 1.5rem;
-}
-.pdfPreviewHeader > h3 {
-  text-decoration: underline;
-}
-.demoPrevNext {
-  color: rgba(250, 250, 250, 0.4);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.4rem;
-}
-.demoPrevNext:first-child {
-  margin-right: auto;
-}
-.demoPrevNext:last-child {
-  margin-left: auto;
-}
-.demoPrevNext:hover:not(:disabled) {
-  text-decoration: underline;
-}
-.demoPrevNext:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .fileUploadDiv {
   max-width: 60%;
 }
@@ -79,6 +19,7 @@
   background-color: rgb(14, 17, 23);
   border: 0.1rem solid rgba(250, 250, 250, 0.2);
   border-radius: 0.2rem;
+  margin-left: auto;
 }
 .fileUpload > button:hover {
   color: rgb(255, 75, 75);
@@ -159,4 +100,8 @@
 .disabled,
 .generateQuizButton:disabled {
   opacity: 0.4;
+}
+
+.pdfPreview {
+  width: 100%;
 }

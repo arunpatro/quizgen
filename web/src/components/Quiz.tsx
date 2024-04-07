@@ -15,7 +15,7 @@ interface QuizGrade {
 }
 interface QuizProps {
   items: QuizItem[];
-  setQuizData: Setter<QuizData | null>;
+  setQuizData: Setter<QuizData>;
 }
 enum QuizMode {
   VIEW,

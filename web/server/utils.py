@@ -1,8 +1,9 @@
 import requests
-import PyPDF2
+import fitz
 from pytube import YouTube
 import os
 from openai import OpenAI
+from urllib.parse import urlparse, parse_qs
 
 from percache import Cache
 
@@ -30,9 +31,13 @@ def process_url(url: str) -> str:
     Download content from a URL and extract text from it.
     Supported URLs: arxiv.org, youtube.com, youtu.be
     """
-    if "arxiv.org" in url:
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc
+    path = parsed_url.path
+
+    if "arxiv.org" in domain:
         # Download arxiv paper
-        arxiv_id = url.split("/")[-1]
+        arxiv_id = path.split("/")[-1]
         pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
 
         if not os.path.exists(f"{arxiv_id}.pdf"):
@@ -41,19 +46,23 @@ def process_url(url: str) -> str:
                 f.write(response.content)
 
         # Extract text from PDF
-        with open(f"{arxiv_id}.pdf", "rb") as f:
-            pdf_reader = PyPDF2.PdfReader(f)
-            text = ""
-            for page in pdf_reader.pages:
-                text += page.extract_text()
+        doc = fitz.open(f"{arxiv_id}.pdf")
+        text = ""
+        for page in doc:
+            text += page.get_text()
 
         return text
 
-    elif "youtube.com" in url or "youtu.be" in url:
-        # Download YouTube video
-        yt = YouTube(url)
-        video_id = yt.video_id
+    elif "youtube.com" in domain or "youtu.be" in domain:
+        # Extract video ID from URL
+        if "youtube.com" in domain:
+            query_string = parse_qs(parsed_url.query)
+            video_id = query_string["v"][0]
+        else:
+            video_id = path.split("/")[-1]
+
         if not os.path.exists(f"{video_id}.mp3"):
+            yt = YouTube(url)
             video = yt.streams.filter(only_audio=True).first()
             video.download(filename=f"{video_id}.mp3")
 

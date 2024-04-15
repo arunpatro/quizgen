@@ -1,0 +1,50 @@
+.linkInput {
+  margin-top: 2rem;
+  display: flex;
+}
+.linkInput > input {
+  flex: 1;
+  background: rgba(38, 39, 48, 0.4);
+  color: inherit;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  border: none;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  outline: none;
+}
+.linkInput > input.invalidLink {
+  border: 1px solid rgb(255, 75, 75);
+}
+.linkInput > button {
+  background-color: rgb(38, 39, 48);
+  color: inherit;
+  border: none;
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  padding: 0.5rem 2rem;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  cursor: pointer;
+}
+.linkInput > button:hover {
+  background-color: rgb(255, 75, 75);
+}
+.linkError {
+  color: rgba(255, 108, 108, 0.8);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+}
+.linkText {
+  margin-top: 2rem;
+  margin-left: 0.5rem;
+}
+.linkText > summary {
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}

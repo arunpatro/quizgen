@@ -1,0 +1,17 @@
+.tabMenu {
+  list-style: none;
+  display: flex;
+  margin: 2.5rem auto;
+}
+.tabMenu > li {
+  border: 1px solid rgba(250, 250, 250, 0.2);
+  flex-grow: 1;
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0.4;
+}
+.tabMenu > li.selected {
+  border-bottom: none;
+  font-weight: 600;
+  opacity: 1;
+}

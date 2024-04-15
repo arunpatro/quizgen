@@ -1,0 +1,18 @@
+.errorMessage {
+  background-color: rgba(255, 108, 108, 0.2);
+  color: rgb(255, 222, 222);
+  padding: 1rem;
+  border-radius: 0.2rem;
+}
+.warningMessage {
+  background-color: rgba(255, 227, 18, 0.2);
+  color: rgb(255, 255, 194);
+  padding: 1rem;
+  border-radius: 0.2rem;
+}
+.successMessage {
+  background-color: rgba(61, 213, 109, 0.2);
+  color: rgb(223, 253, 233);
+  padding: 1rem;
+  border-radius: 0.2rem;
+}

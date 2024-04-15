@@ -9,3 +9,6 @@ python-multipart
 fastapi
 uvicorn
 supabase
+pytube
+percache
+pydub

@@ -21,4 +21,5 @@ export const API = {
   logoutUser: '/api/logoutUser',
   processPdf: '/api/processPdf',
   generateQuiz: '/api/generateQuiz',
+  processLink: '/api/processLink',
 };

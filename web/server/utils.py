@@ -1,13 +1,18 @@
 import requests
 import fitz
-from pytube import YouTube
-import os
+from pytube import YouTube, extract
+from pytube.exceptions import VideoUnavailable
+import re
 from openai import OpenAI
-from urllib.parse import urlparse, parse_qs
-
+from urllib.parse import urlparse
 from percache import Cache
+from dotenv import dotenv_values
+from pydub import AudioSegment
+
 
 cache = Cache(".cache")
+OPENAI_API_KEY = dotenv_values(".env")["OPENAI_API_KEY"]
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 # this can be improved to handle smarter transcription
@@ -17,7 +22,12 @@ def transcribe_audio(file_path: str) -> str:
     """
     Transcribe audio file using OpenAI's Whisper model.
     """
-    client = OpenAI()
+    # truncate audio to 8-minute sample
+    five_minutes = 8 * 60 * 1000  # pydub works in milliseconds
+    mp4_audio = AudioSegment.from_file(file_path, format="mp4")
+    truncated = mp4_audio[:five_minutes]
+    truncated.export(file_path, format="mp4")
+
     with open(file_path, "rb") as audio_file:
         transcription = client.audio.transcriptions.create(
             model="whisper-1", file=audio_file
@@ -36,38 +46,42 @@ def process_url(url: str) -> str:
     path = parsed_url.path
 
     if "arxiv.org" in domain:
-        # Download arxiv paper
-        arxiv_id = path.split("/")[-1]
-        pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
-
-        if not os.path.exists(f"{arxiv_id}.pdf"):
-            response = requests.get(pdf_url)
-            with open(f"{arxiv_id}.pdf", "wb") as f:
-                f.write(response.content)
-
+        # https://info.arxiv.org/help/arxiv_identifier_for_services.html
+        regex = re.compile(r"\/(?:abs|pdf|ps|src|tb)\/(?:hep-th\/)?((\d+\.\d+)|\d+)")
+        match = regex.match(path)
+        if not match:
+            raise ValueError(
+                "Invalid arXiv link. Please ensure the URL is a valid arXiv document."
+            )
         # Extract text from PDF
-        doc = fitz.open(f"{arxiv_id}.pdf")
-        text = ""
-        for page in doc:
-            text += page.get_text()
+        arxiv_id = match.group(1)
+        pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
+        response = requests.get(pdf_url, stream=True)
+        try:
+            doc = fitz.open(stream=response.raw.read(), filetype="pdf")
+            text = ""
+            for page in doc:
+                text += page.get_text()
 
-        return text
+            return text
+        except fitz.FileDataError:
+            raise ValueError("Not a recognised arXiv document.")
 
     elif "youtube.com" in domain or "youtu.be" in domain:
-        # Extract video ID from URL
-        if "youtube.com" in domain:
-            query_string = parse_qs(parsed_url.query)
-            video_id = query_string["v"][0]
+        try:
+            yt = YouTube(parsed_url.geturl())
+        except VideoUnavailable:
+            raise ValueError(
+                "Invalid YouTube link. Please ensure the URL is a valid YouTube video."
+            )
         else:
-            video_id = path.split("/")[-1]
-
-        if not os.path.exists(f"{video_id}.mp3"):
-            yt = YouTube(url)
-            video = yt.streams.filter(only_audio=True).first()
-            video.download(filename=f"{video_id}.mp3")
+            video_id = extract.video_id(parsed_url.geturl())
+            vid_fpath = f"{video_id}.mp4"
+            video = yt.streams.filter(only_audio=True, file_extension="mp4").first()
+            video.download(filename=vid_fpath, skip_existing=True)
 
         # Transcribe audio using OpenAI's Whisper
-        text = transcribe_audio(f"{video_id}.mp3")
+        text = transcribe_audio(vid_fpath)
         return text
     else:
         raise ValueError(

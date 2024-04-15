@@ -8,6 +8,7 @@ import fitz  # PyMuPDF
 import dspy
 import pydantic
 import random
+from utils import process_url
 
 
 app = FastAPI()
@@ -263,5 +264,26 @@ def logout_user(response: Response):
 
 
 @app.post("/api/processLink")
-def process_link():
-    pass
+def process_link(link: Annotated[str, Form()]):
+    try:
+        full_text = process_url(link)
+        if len(full_text) == 0:
+            raise HTTPException(status_code=400, detail="Problem parsing link.")
+
+        tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
+        n_tokens = len(tokens)
+        if n_tokens > MAX_TOKENS:
+            # TEMP: truncate text to save on API costs
+            sample_start = n_tokens // 3
+            text = encoding.decode(tokens[sample_start : sample_start + MAX_TOKENS])
+        else:
+            text = full_text
+
+        response = {
+            "text": text,
+            "max_tokens": MAX_TOKENS,
+            "total_tokens": n_tokens,
+        }
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

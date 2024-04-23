@@ -7,3 +7,4 @@ __pycache__
 dev/
 .cache.db
 *.mp4
+bun.lockb

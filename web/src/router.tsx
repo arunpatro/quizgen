@@ -13,39 +13,15 @@ const ConfirmEmail = lazy(() => import('./pages/auth/ConfirmEmail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const ProtectedRoute: ParentComponent = (props) => {
-  const { authCtx } = useContext(AuthContext);
-  const navigate = useNavigate();
-  createEffect(() => {
-    if (authCtx.user == null) {
-      navigate(PATHS.LOGIN, { replace: true });
-    } else if (!authCtx.user?.emailVerified) {
-      navigate(PATHS.CONFIRM_EMAIL, { replace: true });
-    }
-  });
-
   return (
     <>
-      <Show when={authCtx.user != null}>
-        <Header />
-      </Show>
+      <Header />
       {props.children}
     </>
   );
 };
 
 const AuthRoute: ParentComponent = (props) => {
-  const { authCtx } = useContext(AuthContext);
-  const navigate = useNavigate();
-  createEffect(() => {
-    if (authCtx.user != null) {
-      if (authCtx.user.emailVerified) {
-        navigate(PATHS.ROOT, { replace: true });
-      } else {
-        navigate(PATHS.CONFIRM_EMAIL, { replace: true });
-      }
-    }
-  });
-
   return <>{props.children}</>;
 };
 

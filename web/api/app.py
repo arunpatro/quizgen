@@ -179,7 +179,7 @@ def register_user(
             "email": res.user.email,
             "username": res.user.user_metadata.get("username"),
             "userType": res.user.user_metadata.get("user_type"),
-            "emailVerified": res.user.email_confirmed_at != None,
+            "emailVerified": res.user.email_confirmed_at is not None,
             "createdAt": res.user.created_at,
         }
     }
@@ -208,7 +208,7 @@ def login_user(
                 "email": res.user.email,
                 "username": res.user.user_metadata.get("username"),
                 "userType": res.user.user_metadata.get("user_type"),
-                "emailVerified": res.user.email_confirmed_at != None,
+                "emailVerified": res.user.email_confirmed_at is not None,
                 "createdAt": res.user.created_at,
             },
             "session": {
@@ -237,7 +237,7 @@ def fetch_user(access_token: Annotated[Union[str, None], Cookie()]):
                 "email": res.user.email,
                 "username": res.user.user_metadata.get("username"),
                 "userType": res.user.user_metadata.get("user_type"),
-                "emailVerified": res.user.email_confirmed_at != None,
+                "emailVerified": res.user.email_confirmed_at is not None,
                 "createdAt": res.user.created_at,
             }
         }

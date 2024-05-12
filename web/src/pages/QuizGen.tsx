@@ -14,9 +14,9 @@ const [selectedTab, setSelectedTab] = createSignal<SourceType>('demo');
 const QuizGen: Component = () => {
   return (
     <>
-      <h1>Live Quiz Generator</h1>
+      <h1>QuizGen</h1>
       <p>
-        This interactive tool allows you to generate quizzes for YouTube videos, arXiv links, and
+        This interactive tool allows you to generate quizzes from YouTube videos, arXiv links, and
         PDF documents.
       </p>
       <p>

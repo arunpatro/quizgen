@@ -1,4 +1,4 @@
-<div style="text-align:center">
+<div align="center">
 <img src="docs/logo.webp" alt="QuizGen Logo" width=200></img>
 
 # QuizGen
@@ -43,8 +43,8 @@ Connection between the two should be automatic (see `web/vite.config.ts` for pro
 
 ## Features
 
-- [ ] 🌳 **Multiple Formats**: Generate MCQs, True-False, Assertion-Reasoning, etc.
-- [ ] 🧠 **Edit and Export**: Edit the generations and export to various formats.
+- [x] 🌳 **Multiple Formats**: Generate MCQs, True-False, Assertion-Reasoning, etc.
+- [x] 🧠 **Edit and Export**: Edit the generations and export to various formats.
 
 ## Stay Tuned For
 

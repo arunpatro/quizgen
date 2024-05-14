@@ -1,6 +1,12 @@
+.intro {
+  max-width: var(--max-content-width);
+  margin: auto;
+}
+
 .tabMenu {
   list-style: none;
   display: flex;
+  max-width: var(--max-content-width);
   margin: 2.5rem auto;
 }
 .tabMenu > li {

@@ -1,5 +1,6 @@
 :root {
   --text-white: rgb(250, 250, 250);
+  --max-content-width: 40rem;
 }
 
 body {
@@ -8,8 +9,6 @@ body {
   color: var(--text-white);
   line-height: 1.2rem;
   font-weight: 400;
-  margin: auto;
-  max-width: 40rem;
   padding-top: 4rem;
   margin-bottom: 6rem;
 }

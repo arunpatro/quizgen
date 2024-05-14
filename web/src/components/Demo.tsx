@@ -13,29 +13,34 @@ const Demo: Component = (_) => {
   createEffect(() => setQuizData(demos[activeDemoIdx()].data));
   return (
     <>
-      <section class={styles.pdfPreview}>
-        <div class={styles.pdfPreviewHeader}>
-          <button
-            disabled={activeDemoIdx() < 1}
-            class={styles.demoPrevNext}
-            onClick={() => setActiveDemoIdx((prev) => Math.max(prev - 1, 0))}
-          >
-            &larr; prev
-          </button>
-          <h3>{demos[activeDemoIdx()].title}</h3>
-          <button
-            disabled={activeDemoIdx()! >= demos.length - 1}
-            class={styles.demoPrevNext}
-            onClick={() => setActiveDemoIdx((prev) => Math.min(prev + 1, demos.length - 1))}
-          >
-            next &rarr;
-          </button>
-        </div>
+      <div class={styles.pdfPreviewHeader}>
+        <button
+          disabled={activeDemoIdx() < 1}
+          class={styles.demoPrevNext}
+          onClick={() => setActiveDemoIdx((prev) => Math.max(prev - 1, 0))}
+        >
+          &larr; prev
+        </button>
+        <h3>{demos[activeDemoIdx()].title}</h3>
+        <button
+          disabled={activeDemoIdx()! >= demos.length - 1}
+          class={styles.demoPrevNext}
+          onClick={() => setActiveDemoIdx((prev) => Math.min(prev + 1, demos.length - 1))}
+        >
+          next &rarr;
+        </button>
+      </div>
+      <div class={styles.quizView}>
         {demos[activeDemoIdx()].url ? (
-          <embed height={500} type="application/pdf" src={demos[activeDemoIdx()].url} />
+          <object
+            class={styles.pdfObject}
+            width="100%"
+            type="application/pdf"
+            data={demos[activeDemoIdx()].url}
+          />
         ) : null}
-      </section>
-      <Quiz items={quizData()} setQuizData={setQuizData} />
+        <Quiz items={quizData()} setQuizData={setQuizData} />
+      </div>
     </>
   );
 };

@@ -1,12 +1,10 @@
-.pdfPreview {
-  display: flex;
-  flex-direction: column;
-}
 .pdfPreviewHeader {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem 0 1.5rem;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 1rem auto 1.5rem;
 }
 .pdfPreviewHeader > h3 {
   text-decoration: underline;
@@ -30,4 +28,14 @@
 .demoPrevNext:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+.quizView {
+  display: flex;
+  justify-content: center;
+  column-gap: 2.5rem;
+  padding: 2.5rem 1rem 0;
+}
+.pdfObject {
+  max-width: var(--max-content-width);
+  min-width: 30rem;
 }

@@ -14,14 +14,16 @@ const [selectedTab, setSelectedTab] = createSignal<SourceType>('demo');
 const QuizGen: Component = () => {
   return (
     <>
-      <h1>QuizGen</h1>
-      <p>
-        This interactive tool allows you to generate quizzes from YouTube videos, arXiv links, and
-        PDF documents.
-      </p>
-      <p>
-        Explore the demo to see how it works, or generate your own via the upload and link tabs.
-      </p>
+      <section class={styles.intro}>
+        <h1>QuizGen</h1>
+        <p>
+          This interactive tool allows you to generate quizzes from YouTube videos, arXiv links, and
+          PDF documents.
+        </p>
+        <p>
+          Explore the demo to see how it works, or generate your own via the upload and link tabs.
+        </p>
+      </section>
       <menu class={styles.tabMenu}>
         <li
           class={selectedTab() == 'demo' ? styles.selected : ''}

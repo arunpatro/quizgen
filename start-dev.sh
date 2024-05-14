@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Uncomment the following lines to install bun and uv
+# curl -fsSL https://bun.sh/install | bash
+
 # Start the frontend dev server
 cd web
 bun install
@@ -8,6 +11,7 @@ FRONTEND_PID=$!
 
 # Start the backend dev server
 cd api
+pip install -r requirements.txt
 uvicorn app:app --reload --port 5000 &
 BACKEND_PID=$!
 

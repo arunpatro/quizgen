@@ -16,10 +16,9 @@ OPENAI_API_KEY = dotenv_values(".env")["OPENAI_API_KEY"]
 # SUPABASE_API_URL = dotenv_values(".env")["SUPABASE_API_URL"]
 # SUPABASE_API_KEY = dotenv_values(".env")["SUPABASE_API_KEY"]
 # supabase: Client = create_client(SUPABASE_API_URL, SUPABASE_API_KEY)
-MAX_TOKENS = 3000
-encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+MAX_TOKENS = 50000
+encoding = tiktoken.encoding_for_model("gpt-4o-2024-05-13")
 disallowed_special = set(encoding.special_tokens_set) - {"<|endoftext|>"}
-
 
 async def extract_text_from_pdf(pdf: UploadFile):
     doc = fitz.open(stream=await pdf.read(), filetype="pdf")
@@ -75,7 +74,7 @@ async def process_pdf(pdf: UploadFile):
     return response
 
 
-turbo = dspy.OpenAI(model="gpt-4o", api_key=OPENAI_API_KEY)
+turbo = dspy.OpenAI(model="gpt-4o-2024-05-13", api_key=OPENAI_API_KEY)
 dspy.settings.configure(lm=turbo, log_openai_usage=True)
 quiz_generator = QuizGen()
 
@@ -99,6 +98,7 @@ def process_link(link: Annotated[str, Form()]):
 
         tokens = encoding.encode(full_text, disallowed_special=disallowed_special)
         n_tokens = len(tokens)
+        print(f"Total tokens in resource: {n_tokens}")
         if n_tokens > MAX_TOKENS:
             # TEMP: truncate text to save on API costs
             sample_start = n_tokens // 3

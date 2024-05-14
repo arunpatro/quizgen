@@ -44,3 +44,17 @@ Connection between the two should be automatic (see `web/vite.config.ts` for pro
 
 - [TODO] explain yourself along with citations/references
 - [BUG] quiz reseting may be issues
+
+
+## notes
+- https://github.com/dsdanielpark/arxiv2text 
+    - not that good
+    - math from latex in bad
+    - doesn't get subsections
+    - need a combo of latex and ai 
+- vic pachuri marker-pdf is quite good => takes time, can do a modal inference
+
+
+## tools for reading specific things
+> arxiv workflows
+> arxiv2md utils

@@ -1,10 +1,3 @@
-export const PATHS = {
-  ROOT: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  CONFIRM_EMAIL: '/confirm-email',
-};
-
 export const USER_TYPES = {
   student: 'Student',
   teacher: 'Teacher',
@@ -15,10 +8,6 @@ export const USER_TYPES = {
 };
 
 export const API = {
-  fetchUser: '/api/fetchUser',
-  registerUser: '/api/registerUser',
-  loginUser: '/api/loginUser',
-  logoutUser: '/api/logoutUser',
   processPdf: '/api/processPdf',
   generateQuiz: '/api/generateQuiz',
   processLink: '/api/processLink',

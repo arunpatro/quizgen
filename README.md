@@ -1,6 +1,5 @@
-<div align="center">
-
-<img src="./docs/logo.webp" alt="QuizGen Logo" width=200></img>
+<div style="text-align:center">
+<img src="docs/logo.webp" alt="QuizGen Logo" width=200></img>
 
 # QuizGen
 
@@ -13,32 +12,39 @@ Generate quizes to test your understanding.
 </div>
 
 ## about
-QuizGen is an AI app to generate quizes from content.
+
+QuizGen is an AI app to automatically generate quizzes from content.
 
 ## running locally (web app)
+
 1. First create a `.env` from the `.env.sample` in the `web/api` directory
 2. Start the local frontend dev server:
+
 ```sh
 cd web && npm install
 npm run dev
 ```
+
 3. Start the local backend dev server:
+
 ```sh
-cd api
+cd api && pip install -r requirements.txt
 uvicorn app:app --reload --port 5000
 ```
 
 ## deploy to vercel
+
 ```sh
 npm i -g vercel
 vercel
 ```
+
 Connection between the two should be automatic (see `web/vite.config.ts` for proxy config).
 
 ## Features
 
-- [x] 🌳 **Multiple Formats**: Generate MCQs, True-False, Assertion-Reasoning, etc.
-- [x] 🧠 **Edit and Export**: Edit the generations and export to various formats.
+- [ ] 🌳 **Multiple Formats**: Generate MCQs, True-False, Assertion-Reasoning, etc.
+- [ ] 🧠 **Edit and Export**: Edit the generations and export to various formats.
 
 ## Stay Tuned For
 

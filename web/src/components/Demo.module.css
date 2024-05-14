@@ -29,13 +29,3 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
-.quizView {
-  display: flex;
-  justify-content: center;
-  column-gap: 2.5rem;
-  padding: 2.5rem 1rem 0;
-}
-.pdfObject {
-  max-width: var(--max-content-width);
-  min-width: 30rem;
-}

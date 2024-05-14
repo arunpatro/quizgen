@@ -16,3 +16,14 @@
   padding: 1rem;
   border-radius: 0.2rem;
 }
+.quizView {
+  display: flex;
+  justify-content: center;
+  column-gap: 2.5rem;
+  padding: 2.5rem 1rem 0;
+}
+.quizView > object {
+  width: 100%;
+  max-width: var(--max-content-width);
+  min-width: 30rem;
+}

@@ -67,71 +67,73 @@ const FileQuiz: Component = (_) => {
 
   return (
     <>
-      <FileUpload />
-      <Switch>
-        <Match when={fileTooLarge()}>
-          <div class={commonStyles.errorMessage}>
-            Max file size limit exceeded. Please select a smaller file.
-          </div>
-        </Match>
-        <Match when={pdfProcessing()}>
-          <Spinner text="Extracting text from PDF..." />
-        </Match>
-        <Match when={pdfError()}>
-          <div class={commonStyles.errorMessage}>Error parsing PDF file, please try another.</div>
-        </Match>
-        <Match when={pdfData() != null && quizData().length == 0}>
-          <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
-            <div class={commonStyles.warningMessage}>
-              Text is too long ({pdfData()!.total_tokens} tokens). Truncated to a{' '}
-              {pdfData()!.max_tokens}-token sample.
-            </div>
-          </Show>
-          <p class={`${styles.pdfSuccess}${quizProcessing() ? ` ${styles.disabled}` : ''}`}>
-            PDF text successfully parsed. Pages considered:{' '}
-            {`p.${pdfData()!.processed_pages.start}~p.${pdfData()!.processed_pages.end} out of ${
-              pdfData()!.total_pages
-            } total`}
-            .
-          </p>
-          <Show
-            when={!quizProcessing()}
-            fallback={<Spinner text="Generating... this may take several seconds..." />}
-          >
-            <button
-              class={styles.generateQuizButton}
-              onClick={() => {
-                setQuizProcessing(true);
-                setQuizError(false);
-                generateQuizHandler(pdfData()!.text)
-                  .then((data) => setQuizData(data))
-                  .then(() => setQuizProcessing(false))
-                  .catch(() => {
-                    setQuizProcessing(false);
-                    setQuizError(true);
-                  });
-              }}
-              disabled={quizProcessing()}
-            >
-              Generate questions
-            </button>
-          </Show>
-          <Show when={quizError()}>
+      <div class={styles.contentMargin}>
+        <FileUpload />
+        <Switch>
+          <Match when={fileTooLarge()}>
             <div class={commonStyles.errorMessage}>
-              Sorry but the quiz cannot be generated right now. Please try again later or{' '}
-              <a href="emailto:support@creia.ai">contact us</a> for support.
+              Max file size limit exceeded. Please select a smaller file.
             </div>
-          </Show>
-        </Match>
-      </Switch>
+          </Match>
+          <Match when={pdfProcessing()}>
+            <Spinner text="Extracting text from PDF..." />
+          </Match>
+          <Match when={pdfError()}>
+            <div class={commonStyles.errorMessage}>Error parsing PDF file, please try another.</div>
+          </Match>
+          <Match when={pdfData() != null && quizData().length == 0}>
+            <Show when={pdfData()!.total_tokens > pdfData()!.max_tokens}>
+              <div class={commonStyles.warningMessage}>
+                Text is too long ({pdfData()!.total_tokens} tokens). Truncated to a{' '}
+                {pdfData()!.max_tokens}-token sample.
+              </div>
+            </Show>
+            <p class={`${styles.pdfSuccess}${quizProcessing() ? ` ${styles.disabled}` : ''}`}>
+              PDF text successfully parsed. Pages considered:{' '}
+              {`p.${pdfData()!.processed_pages.start}~p.${pdfData()!.processed_pages.end} out of ${
+                pdfData()!.total_pages
+              } total`}
+              .
+            </p>
+            <Show
+              when={!quizProcessing()}
+              fallback={<Spinner text="Generating... this may take several seconds..." />}
+            >
+              <button
+                class={styles.generateQuizButton}
+                onClick={() => {
+                  setQuizProcessing(true);
+                  setQuizError(false);
+                  generateQuizHandler(pdfData()!.text)
+                    .then((data) => setQuizData(data))
+                    .then(() => setQuizProcessing(false))
+                    .catch(() => {
+                      setQuizProcessing(false);
+                      setQuizError(true);
+                    });
+                }}
+                disabled={quizProcessing()}
+              >
+                Generate questions
+              </button>
+            </Show>
+            <Show when={quizError()}>
+              <div class={commonStyles.errorMessage}>
+                Sorry but the quiz cannot be generated right now. Please try again later or{' '}
+                <a href="emailto:support@creia.ai">contact us</a> for support.
+              </div>
+            </Show>
+          </Match>
+        </Switch>
+      </div>
       <Show when={file() != null && quizData().length > 0}>
-        <embed
-          class={styles.pdfPreview}
-          height={500}
-          type="application/pdf"
-          src={URL.createObjectURL(file()!) + `#page=${pdfData()!.processed_pages.start}`}
-        />
-        <Quiz items={quizData()} setQuizData={setQuizData} />
+        <div class={commonStyles.quizView}>
+          <object
+            type="application/pdf"
+            data={URL.createObjectURL(file()!) + `#page=${pdfData()!.processed_pages.start}`}
+          />
+          <Quiz items={quizData()} setQuizData={setQuizData} />
+        </div>
       </Show>
     </>
   );

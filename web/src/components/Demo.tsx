@@ -4,6 +4,7 @@ import type { QuizData } from './Quiz';
 import { createEffect, createSignal } from 'solid-js';
 import demos from '@src/demo-data';
 import Quiz from './Quiz';
+import commonStyles from './Common.module.css';
 import styles from './Demo.module.css';
 
 const [activeDemoIdx, setActiveDemoIdx] = createSignal<number>(0);
@@ -30,14 +31,9 @@ const Demo: Component = (_) => {
           next &rarr;
         </button>
       </div>
-      <div class={styles.quizView}>
+      <div class={commonStyles.quizView}>
         {demos[activeDemoIdx()].url ? (
-          <object
-            class={styles.pdfObject}
-            width="100%"
-            type="application/pdf"
-            data={demos[activeDemoIdx()].url}
-          />
+          <object type="application/pdf" data={demos[activeDemoIdx()].url} />
         ) : null}
         <Quiz items={quizData()} setQuizData={setQuizData} />
       </div>

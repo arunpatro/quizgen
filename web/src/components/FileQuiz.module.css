@@ -1,3 +1,7 @@
+.contentMargin {
+  max-width: var(--max-content-width);
+  margin: auto;
+}
 .fileUpload {
   display: flex;
   align-items: center;
@@ -79,8 +83,4 @@
 .disabled,
 .generateQuizButton:disabled {
   opacity: 0.4;
-}
-
-.pdfPreview {
-  width: 100%;
 }

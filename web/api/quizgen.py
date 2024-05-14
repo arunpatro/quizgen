@@ -1,5 +1,6 @@
 import pydantic
 import dspy
+import random
 
 class QuizItem(pydantic.BaseModel):
     question: str

@@ -1,5 +1,9 @@
+.contentMargin {
+  max-width: var(--max-content-width);
+  margin: auto;
+}
 .linkInput {
-  margin-top: 2rem;
+  margin-top: 1rem;
   display: flex;
 }
 .linkInput > input {
@@ -31,6 +35,10 @@
 .linkInput > button:hover {
   background-color: rgb(255, 75, 75);
 }
+.linkInput > button:disabled {
+  opacity: 0.4;
+  background-color: rgb(255, 75, 75);
+}
 .linkError {
   color: rgba(255, 108, 108, 0.8);
   margin-top: 0.5rem;
@@ -38,8 +46,7 @@
   font-size: 0.8rem;
 }
 .linkText {
-  margin-top: 2rem;
-  margin-left: 0.5rem;
+  margin: 2rem auto;
 }
 .linkText > summary {
   cursor: pointer;
@@ -47,4 +54,16 @@
   line-height: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
+}
+.linkView {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--max-content-width);
+}
+.linkView object {
+  flex: 1;
+}
+.linkView .linkText {
+  margin: 2rem 0;
 }

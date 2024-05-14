@@ -153,7 +153,7 @@ def generate_quiz(passage: Annotated[str, Form()]) -> list[QuizItem]:
 @app.post("/api/processLink")
 def process_link(link: Annotated[str, Form()]):
     try:
-        full_text = process_url(link)
+        full_text, link_type, embed_link = process_url(link)
         if len(full_text) == 0:
             raise HTTPException(status_code=400, detail="Problem parsing link.")
 
@@ -170,6 +170,8 @@ def process_link(link: Annotated[str, Form()]):
             "text": text,
             "max_tokens": MAX_TOKENS,
             "total_tokens": n_tokens,
+            "link_type": link_type,
+            "embed_link": embed_link,
         }
         return response
     except ValueError as e:

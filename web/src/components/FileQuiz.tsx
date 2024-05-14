@@ -100,7 +100,7 @@ const FileQuiz: Component = (_) => {
               fallback={<Spinner text="Generating... this may take several seconds..." />}
             >
               <button
-                class={styles.generateQuizButton}
+                class={commonStyles.generateQuizButton}
                 onClick={() => {
                   setQuizProcessing(true);
                   setQuizError(false);
@@ -114,7 +114,7 @@ const FileQuiz: Component = (_) => {
                 }}
                 disabled={quizProcessing()}
               >
-                Generate questions
+                Generate quiz
               </button>
             </Show>
             <Show when={quizError()}>

@@ -65,22 +65,3 @@
   margin-top: 1.5rem;
   margin-bottom: 1rem;
 }
-
-.generateQuizButton {
-  background-color: transparent;
-  color: inherit;
-  border: 0.1rem solid rgba(250, 250, 250, 0.2);
-  border-radius: 0.2rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-.generateQuizButton:hover:not(:disabled) {
-  color: rgb(255, 75, 75);
-  border-color: rgb(255, 75, 75);
-}
-.disabled,
-.generateQuizButton:disabled {
-  opacity: 0.4;
-}

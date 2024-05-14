@@ -1,3 +1,4 @@
+from typing import Tuple
 import requests
 import fitz
 from pytube import YouTube, extract
@@ -22,8 +23,8 @@ def transcribe_audio(file_path: str) -> str:
     """
     Transcribe audio file using OpenAI's Whisper model.
     """
-    # truncate audio to 8-minute sample
-    five_minutes = 8 * 60 * 1000  # pydub works in milliseconds
+    # truncate audio to 6-minute sample
+    five_minutes = 6 * 60 * 1000  # pydub works in milliseconds
     mp4_audio = AudioSegment.from_file(file_path, format="mp4")
     truncated = mp4_audio[:five_minutes]
     truncated.export(file_path, format="mp4")
@@ -36,7 +37,7 @@ def transcribe_audio(file_path: str) -> str:
     return transcription.text
 
 
-def process_url(url: str) -> str:
+def process_url(url: str) -> Tuple[str, str, str]:
     """
     Download content from a URL and extract text from it.
     Supported URLs: arxiv.org, youtube.com, youtu.be
@@ -63,7 +64,7 @@ def process_url(url: str) -> str:
             for page in doc:
                 text += page.get_text()
 
-            return text
+            return text, "arxiv", pdf_url
         except fitz.FileDataError:
             raise ValueError("Not a recognised arXiv document.")
 
@@ -82,7 +83,7 @@ def process_url(url: str) -> str:
 
         # Transcribe audio using OpenAI's Whisper
         text = transcribe_audio(vid_fpath)
-        return text
+        return text, "youtube", f"https://www.youtube.com/embed/{video_id}"
     else:
         raise ValueError(
             "Unsupported URL. Only arxiv and YouTube links are currently supported."

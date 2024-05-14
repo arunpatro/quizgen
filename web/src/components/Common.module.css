@@ -22,8 +22,27 @@
   column-gap: 2.5rem;
   padding: 2.5rem 1rem 0;
 }
-.quizView > object {
+.quizView object,
+.quizView iframe {
   width: 100%;
-  max-width: var(--max-content-width);
   min-width: 30rem;
+  max-width: var(--max-content-width);
+}
+.generateQuizButton {
+  background-color: transparent;
+  color: inherit;
+  border: 0.1rem solid rgba(250, 250, 250, 0.2);
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.generateQuizButton:hover:not(:disabled) {
+  color: rgb(255, 75, 75);
+  border-color: rgb(255, 75, 75);
+}
+.disabled,
+.generateQuizButton:disabled {
+  opacity: 0.4;
 }
